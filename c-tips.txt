@@ -7,3 +7,5 @@ new type which stores the array and its length (to know when to end loops)
 be careful about the type of numbers when doing divisions
 
 include the librairies as arguments when compiling with gcc
+
+use "%*c" in scanf() to read a character (like pressing key <Enter>) but ignore it
