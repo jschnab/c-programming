@@ -1,0 +1,9 @@
+dynamic memory allocation (malloc, calloc, realloc) can have undefined
+behaviour, check that it does not return NULL
+
+except for char arrays, C does not know when an array ends, one can create a
+new type which stores the array and its length (to know when to end loops)
+
+be careful about the type of numbers when doing divisions
+
+include the librairies as arguments when compiling with gcc
