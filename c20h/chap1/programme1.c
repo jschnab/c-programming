@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int main () {
-    puts ("Bonjour");
-    getchar();
+    (void) puts ("Bonjour");
+    (void) getchar();
     return 0;
 }
