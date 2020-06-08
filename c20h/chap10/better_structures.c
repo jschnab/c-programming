@@ -5,14 +5,14 @@
 #define LENGTH 40
 
 
-typedef struct persona {
+typedef struct {
     int age;
     char name[LENGTH];
 } persona;
 
 
 int main() {
-    struct persona p;
+    persona p;
     printf("Enter your name: ");
     (void) scanf("%s%*c", p.name);
     printf("Enter your age: ");
