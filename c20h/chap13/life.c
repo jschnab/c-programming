@@ -3,12 +3,13 @@
 #include <time.h>
 
 
-#define MATRIX_SIZE 22
+#define MATRIX_SIZE 24
 #define SUB_MATRIX_SIZE (MATRIX_SIZE - 2)
 
 
 // prototypes
 static void initialize_matrix(int matrix[][MATRIX_SIZE]);
+static void initialize_matrix_conway(int matrix[][MATRIX_SIZE]);
 static int alive_neighbours(int matrix[][MATRIX_SIZE], int row, int col);
 static void update_matrix(int matrix[][MATRIX_SIZE]);
 static void display_matrix(int matrix[][MATRIX_SIZE]);
@@ -24,7 +25,7 @@ int main() {
     printf("Number of cycles: ");
     (void) scanf("%i%*c", &n_cycles);
 
-    initialize_matrix(matrix);
+    initialize_matrix_conway(matrix);
     printf("Initial population:\n");
     display_matrix(matrix);
     printf("Press a key to continue\n");
@@ -59,6 +60,32 @@ static void initialize_matrix(int matrix[][MATRIX_SIZE]){
 }
 
 
+// initialize starting matrix in honor of John Conway
+static void initialize_matrix_conway(int matrix[][MATRIX_SIZE]){
+    int i, j;
+
+    for (i = 0; i < MATRIX_SIZE; i++) {
+        for (j = 0; j < MATRIX_SIZE; j++) {
+            if (
+                (i == 10 && j == 9) || (i == 10 && j == 10) ||
+                (i == 10 && j == 11) || (i == 11 && j == 9) ||
+                (i == 11 && j == 11) || (i == 12 && j == 9) ||
+                (i == 12 && j == 11) || (i == 13 && j == 10) ||
+                (i == 14 && j == 7) || (i == 14 && j == 9) ||
+                (i == 14 && j == 10) || (i == 14 && j == 11) ||
+                (i == 15 && j == 8) || (i == 15 && j == 10) ||
+                (i == 15 && j == 12) || (i == 16 && j == 13) ||
+                (i == 16 && j == 10) || (i == 17 && j == 9) ||
+                (i == 17 && j == 11) || (i == 18 && j == 9) ||
+                (i == 18 && j == 11)
+            )
+                matrix[i][j] = 1;
+            else
+                matrix[i][j] = 0;
+        }
+    }
+}
+
 
 // get number of alive neighbours at position (row, col)
 static int alive_neighbours(int matrix[][MATRIX_SIZE], int row, int col) {
@@ -90,10 +117,18 @@ static void update_matrix(int matrix[][MATRIX_SIZE]) {
     for (i = 0; i < SUB_MATRIX_SIZE; i++) {
         for (j = 0; j < SUB_MATRIX_SIZE; j++) {
             neighbours = density_matrix[i][j];
-            if (neighbours == 2)
-                matrix[i + 1][j + 1] = 1;
-            else if (neighbours == 0 || neighbours == 4)
-                matrix[i + 1][j + 1] = 0;
+            if (matrix[i + 1][j + 1] == 1) {
+                if (neighbours <= 1 || neighbours >= 4)
+                    matrix[i + 1][j + 1] = 0;
+                else
+                    matrix[i + 1][j + 1] = 1;
+            }
+            else {
+                if (neighbours == 3)
+                    matrix[i + 1][j + 1] = 1;
+                else
+                    matrix[i + 1][j + 1] = 0;
+            }
         }
     }
 }
