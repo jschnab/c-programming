@@ -10,6 +10,7 @@
 // prototypes
 static void initialize_matrix(int matrix[][MATRIX_SIZE]);
 static void initialize_matrix_conway(int matrix[][MATRIX_SIZE]);
+static void initialize_matrix_tumbler(int matrix[][MATRIX_SIZE]);
 static int alive_neighbours(int matrix[][MATRIX_SIZE], int row, int col);
 static void update_matrix(int matrix[][MATRIX_SIZE]);
 static void display_matrix(int matrix[][MATRIX_SIZE]);
@@ -25,7 +26,7 @@ int main() {
     printf("Number of cycles: ");
     (void) scanf("%i%*c", &n_cycles);
 
-    initialize_matrix_conway(matrix);
+    initialize_matrix_tumbler(matrix);
     printf("Initial population:\n");
     display_matrix(matrix);
     printf("Press a key to continue\n");
@@ -42,7 +43,7 @@ int main() {
 }
 
 
-// initialize starting matrix
+// initialize starting matrix randomly
 static void initialize_matrix(int matrix[][MATRIX_SIZE]){
     int i, j, random;
     time_t t;
@@ -85,6 +86,34 @@ static void initialize_matrix_conway(int matrix[][MATRIX_SIZE]){
         }
     }
 }
+
+
+// initialize starting matrix with a 'tumbler'
+static void initialize_matrix_tumbler(int matrix[][MATRIX_SIZE]){
+    int i, j;
+
+    for (i = 0; i < MATRIX_SIZE; i++) {
+        for (j = 0; j < MATRIX_SIZE; j++) {
+            if (
+                (i == 10 && j == 8) || (i == 10 && j == 9) ||
+                (i == 10 && j == 11) || (i == 10 && j == 12) ||
+                (i == 11 && j == 8) || (i == 11 && j == 9) ||
+                (i == 11 && j == 11) || (i == 11 && j == 12) ||
+                (i == 12 && j == 9) || (i == 12 && j == 11) ||
+                (i == 13 && j == 7) || (i == 13 && j == 9) ||
+                (i == 13 && j == 11) || (i == 13 && j == 13) ||
+                (i == 14 && j == 7) || (i == 14 && j == 9) ||
+                (i == 14 && j == 11) || (i == 14 && j == 13) ||
+                (i == 15 && j == 7) || (i == 15 && j == 8) ||
+                (i == 15 && j == 12) || (i == 15 && j == 13)
+            )
+                matrix[i][j] = 1;
+            else
+                matrix[i][j] = 0;
+        }
+    }
+}
+
 
 
 // get number of alive neighbours at position (row, col)
