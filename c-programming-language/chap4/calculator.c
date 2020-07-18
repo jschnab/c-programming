@@ -11,8 +11,8 @@
 
 char buf[BUFSIZE];  /* buffer for ungetch */
 int bufp = 0;  /* free next position in buf */
-int sp = 0;
-double val[MAXVAL];
+int sp = 0;  /* next free stack position */
+double val[MAXVAL];  /* value stack */
 
 
 int getch(void);
@@ -20,6 +20,7 @@ int getop(char []);
 double pop(void);
 void push(double);
 void ungetch(int);
+int modulo(double, double);
 
 
 int main() {
@@ -53,9 +54,14 @@ int main() {
                 else
                     printf("error: zero divisor\n");
                 break;
+                
+            case '%':
+                op2 = pop();
+                push(modulo(pop(), op2));
+                break;
 
             case '\n':
-                printf("\t%.8g\n", pop());
+                printf("%.8g\n", pop());
                 break;
 
             default:
@@ -94,10 +100,24 @@ int getop(char s[]) {
 
     s[1] = '\0';
 
-    if (!isdigit(c) && c != '.')
+    /* '-' may be a negative sign so we ignore it here */
+    if (!isdigit(c) && c != '.' && c != '-')
         return c;  /* not a number */
     
     i = 0;
+
+    if (c == '-') {
+        /* check the next character to see if it's part of a number */
+        if (isdigit(c = getch()) || c == '.')
+            s[++i] = c;  /* negative number */
+
+        /* subtraction sign */
+        else {
+            if (c != EOF)
+                ungetch(c);
+            return '-';
+        }
+    }
 
     if (isdigit(c))  /* collect integer part */
         while (isdigit(s[++i] = c = getch()))
@@ -128,4 +148,12 @@ void ungetch(int c) {
         printf("ungetch: too many characters\n");
     else
         buf[bufp++] = c;
+}
+
+
+/* calculate modulo of two numbers */
+int modulo(double a, double b) {
+    int x = (int) a;
+    int y = (int) b;
+    return x - (x / y * y);
 }
