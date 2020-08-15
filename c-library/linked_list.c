@@ -17,6 +17,8 @@ void insert(ListNode *, int, int);
 void insert_front(ListNode **, int);
 int length(ListNode *);
 void print_list(ListNode *);
+void reverse(ListNode **);
+ListNode *copy_list(ListNode *head);
 
 
 int main(int argc, char *argv[]) {
@@ -45,11 +47,22 @@ int main(int argc, char *argv[]) {
     printf("length = %d\n", length(head));
     printf("\n");
 
+    printf("reverse list: ");
+    reverse(&head);
+    print_list(head);
+    printf("\n");
+
     n = 5;
     printf("inserting value 4 at index %d: ", n);
     insert(head, 4, n);
     print_list(head);
     printf("length = %d\n", length(head));
+    printf("\n");
+
+    printf("copy list: ");
+    ListNode *copy = copy_list(head);
+    print_list(copy);
+    printf("length = %d\n", length(copy));
     printf("\n");
 
     ListNode *other = (ListNode *) malloc(sizeof(ListNode));
@@ -75,7 +88,6 @@ int main(int argc, char *argv[]) {
     print_list(another);
     printf("list 1 %s list 2\n", equal(head, another) ? "=" : "!=");
 
-
     free(head);
     return 0;
 }
@@ -97,27 +109,6 @@ ListNode *append(ListNode *head, int x) {
         current = current->next;
     current->next = new;
     return head;
-}
-
-
-/* delete the nth element of a list
- * if n > length of list, delete last element */
-ListNode *delete2(ListNode *head, int n) {
-    if (head != NULL) {
-        ListNode *first = (ListNode *) malloc(sizeof(ListNode));
-        first->next = head;
-        ListNode *current = first;
-        while (n-- > 0) {
-            current = current->next;
-            if (current->next == NULL) {
-                printf("index error during deletion: n > length\n");
-                return first->next;
-            }
-        }
-        current->next = current->next->next;
-        return first->next;
-    }
-    return NULL;
 }
 
 
@@ -149,31 +140,6 @@ char equal(ListNode *a, ListNode *b) {
         b = b->next;
     }
     return 1;
-}
-
-
-/* insert a value at a specific index */
-ListNode *insert2(ListNode *head, int val, int n) {
-    ListNode *new = (ListNode *) malloc(sizeof(ListNode));
-    new->val = val;
-
-    if (head != NULL) {
-        ListNode *first = (ListNode *) malloc(sizeof(ListNode));
-        first->next = head;
-        ListNode *current = first;
-        while (n-- > 0) {
-            current = current->next;
-            if (current == NULL && n >= 0) {
-                printf("index error during insertion: n > length\n");
-                return first->next;
-            }
-        }
-        new->next = current->next;
-        current->next = new;
-        return first->next;
-    }
-
-    return new;
 }
 
 
@@ -226,3 +192,85 @@ void print_list(ListNode *head) {
     }
 }
 
+
+/* reverse a list */
+void reverse(ListNode **head) {
+    ListNode *reverse = NULL;
+    ListNode *next;
+    ListNode *current = *head;
+    while (current != NULL) {
+        next = current->next;
+        current->next = reverse;
+        reverse = current;
+        current = next;
+    }
+    *head = reverse;
+}
+
+
+/* copies a list */
+ListNode *copy_list(ListNode *head) {
+    if (head != NULL) {
+        ListNode *new = (ListNode *) malloc(sizeof(ListNode));
+        new->val = head->val;
+        ListNode *current = new;
+        while (head->next != NULL) {
+            current->next = (ListNode *) malloc(sizeof(ListNode));
+            head = head->next;
+            current = current->next;
+            current->val = head->val;
+        }
+        return new;
+    }
+    return NULL;
+}
+
+
+/* SANDBOX 
+ * the following functions should be considered in draft stage and are
+ * here before being deprecated */
+
+/* insert a value at a specific index */
+ListNode *insert2(ListNode *head, int val, int n) {
+    ListNode *new = (ListNode *) malloc(sizeof(ListNode));
+    new->val = val;
+
+    if (head != NULL) {
+        ListNode *first = (ListNode *) malloc(sizeof(ListNode));
+        first->next = head;
+        ListNode *current = first;
+        while (n-- > 0) {
+            current = current->next;
+            if (current == NULL && n >= 0) {
+                printf("index error during insertion: n > length\n");
+                return first->next;
+            }
+        }
+        new->next = current->next;
+        current->next = new;
+        return first->next;
+    }
+
+    return new;
+}
+
+
+/* delete the nth element of a list
+ * if n > length of list, delete last element */
+ListNode *delete2(ListNode *head, int n) {
+    if (head != NULL) {
+        ListNode *first = (ListNode *) malloc(sizeof(ListNode));
+        first->next = head;
+        ListNode *current = first;
+        while (n-- > 0) {
+            current = current->next;
+            if (current->next == NULL) {
+                printf("index error during deletion: n > length\n");
+                return first->next;
+            }
+        }
+        current->next = current->next->next;
+        return first->next;
+    }
+    return NULL;
+}
