@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 
 typedef struct lnode {
@@ -151,11 +152,32 @@ ListNode *list_copy(ListNode *head) {
 }
 
 
+/* convert a list to an array */
 void list_to_array(ListNode *head, int *array) {
     while (head) {
         *array++ = head->val;
         head = head->next;
     }
+}
+
+
+/* make a list from a variable number of arguments */
+ListNode *list_from_args(int n, ...) {
+    if (n-- > 0) {
+        va_list values;
+        va_start(values, n);
+        ListNode *head = (ListNode *) malloc(sizeof(ListNode));
+        head->val = va_arg(values, int);
+        ListNode *current = head;
+        while (n-- > 0) {
+            current->next = (ListNode *) malloc(sizeof(ListNode));
+            current = current->next;
+            current->val = va_arg(values, int);
+        }
+        va_end(values);
+        return head;
+    }
+    return NULL;
 }
 
 

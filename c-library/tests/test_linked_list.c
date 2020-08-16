@@ -378,6 +378,20 @@ void test_list_copy_2() {
 }
 
 
+/* make a list from a sequence of numbers */
+void test_list_from_args_1() {
+    ListNode *head = list_from_args(3, 1, 2, 3);
+    for (int i = 1; head != NULL; i++) {
+        if (i > 3 || head->val != i) {
+            printf("test_list_from_args_1: FAILED\n");
+            return;
+        }
+        head = head->next;
+    }
+    printf("test_list_from_args_1: PASS\n");
+}
+
+
 int main(int argc, char *argv[]) {
     test_list_to_array_1();
     test_list_to_array_2();
@@ -401,5 +415,6 @@ int main(int argc, char *argv[]) {
     test_list_reverse_2();
     test_list_copy_1();
     test_list_copy_2();
+    test_list_from_args_1();
     return 0;
 }
