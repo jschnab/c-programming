@@ -8,7 +8,7 @@ typedef struct lnode {
 } ListNode;
 
 
-ListNode *list_append(ListNode *, int);
+void list_append(ListNode *, int);
 void list_delete(ListNode *, int);
 char list_equal(ListNode *, ListNode *);
 void list_insert(ListNode *, int, int);
@@ -99,21 +99,20 @@ int other_main(int argc, char *argv[]) {
 
 
 /* append a node storing x at the end of the list */
-ListNode *list_append(ListNode *head, int x) {
+void list_append(ListNode *head, int x) {
+    if (head == NULL)
+        return;
+
     ListNode *new = (ListNode *) malloc(sizeof(ListNode));
     if (new == NULL)
-        return NULL;
+        return;
     new->val = x;
-
-    if (head == NULL)
-        return new;
 
     ListNode *current;
     current = head;
     while (current->next != NULL)
         current = current->next;
     current->next = new;
-    return head;
 }
 
 
@@ -172,7 +171,6 @@ void list_insert_front(ListNode **head, int val) {
     new->val = val;
     new->next = *head;
     *head = new;
-    return;
 }
 
 
@@ -287,3 +285,23 @@ ListNode *delete2(ListNode *head, int n) {
     }
     return NULL;
 }
+
+
+/* append a node storing x at the end of the list */
+ListNode *list_append2(ListNode *head, int x) {
+    ListNode *new = (ListNode *) malloc(sizeof(ListNode));
+    if (new == NULL)
+        return NULL;
+    new->val = x;
+
+    if (head == NULL)
+        return new;
+
+    ListNode *current;
+    current = head;
+    while (current->next != NULL)
+        current = current->next;
+    current->next = new;
+    return head;
+}
+

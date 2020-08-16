@@ -4,7 +4,7 @@ typedef struct lnode {
 } ListNode;
 
 
-ListNode *list_append(ListNode *, int);
+void list_append(ListNode *, int);
 void list_delete(ListNode *, int);
 char list_equal(ListNode *, ListNode *);
 void list_insert(ListNode *, int, int);
