@@ -9,6 +9,7 @@ typedef struct lnode {
 
 
 void list_append(ListNode *, int);
+ListNode *list_copy(ListNode *);
 void list_delete(ListNode *, int);
 char list_equal(ListNode *, ListNode *);
 void list_insert(ListNode *, int, int);
@@ -16,86 +17,7 @@ void list_insert_front(ListNode **, int);
 int list_length(ListNode *);
 void list_print(ListNode *);
 void list_reverse(ListNode **);
-ListNode *list_copy(ListNode *);
 void list_to_array(ListNode *, int *);
-
-
-int other_main(int argc, char *argv[]) {
-    ListNode *head = (ListNode *) malloc(sizeof(ListNode));
-    if (head != NULL) {
-        head->val = 1;
-    }
-    list_append(head, 2);
-    list_append(head, 3);
-    printf("original list: ");
-    list_print(head);
-    printf("length = %d\n", list_length(head));
-    printf("\n");
-
-    printf("convert list to array\n");
-    int array[3];
-    list_to_array(head, array);
-    for (int i = 0; i < 3; i++)
-        printf("array[%d] = %d\n", i, array[i]);
-    printf("\n");
-
-    int n = 5;
-    printf("deleting node at index %d: ", n);
-    list_delete(head, n);
-    list_print(head);
-    printf("length = %d\n", list_length(head));
-    printf("\n");
-
-    n = 9;
-    printf("inserting %d at the front\n", n);
-    list_insert_front(&head, n);
-    list_print(head);
-    printf("length = %d\n", list_length(head));
-    printf("\n");
-
-    printf("reverse list: ");
-    list_reverse(&head);
-    list_print(head);
-    printf("\n");
-
-    n = 5;
-    printf("inserting value 4 at index %d: ", n);
-    list_insert(head, 4, n);
-    list_print(head);
-    printf("length = %d\n", list_length(head));
-    printf("\n");
-
-    printf("copy list: ");
-    ListNode *copy = list_copy(head);
-    list_print(copy);
-    printf("length = %d\n", list_length(copy));
-    printf("\n");
-
-    ListNode *other = (ListNode *) malloc(sizeof(ListNode));
-    other->val = 1;
-    list_append(other, 3);
-    list_append(other, 4);
-    printf("comparing two lists:\n");
-    printf("list 1: ");
-    list_print(head);
-    printf("list 2: ");
-    list_print(other);
-    printf("list 1 %s list 2\n", list_equal(head, other) ? "=" : "!=");
-    printf("\n");
-
-    ListNode *another = (ListNode *) malloc(sizeof(ListNode));
-    another->val = 1;
-    list_append(another, 3);
-    list_append(another, 5);
-    printf("comparing two lists:\n");
-    printf("list 1: ");
-    list_print(head);
-    printf("list 2: ");
-    list_print(another);
-    printf("list 1 %s list 2\n", list_equal(head, another) ? "=" : "!=");
-
-    return 0;
-}
 
 
 /* append a node storing x at the end of the list */
@@ -304,4 +226,3 @@ ListNode *list_append2(ListNode *head, int x) {
     current->next = new;
     return head;
 }
-

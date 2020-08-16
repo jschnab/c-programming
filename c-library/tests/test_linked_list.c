@@ -303,7 +303,7 @@ void test_list_insert_front_1() {
 }
 
 
-/* insert node at front of empty list (NULL POINTER) */
+/* insert node at front of empty list (NULL pointer) */
 void test_list_insert_front_2() {
     ListNode *head = NULL;
     list_insert_front(&head, 1);
@@ -315,6 +315,66 @@ void test_list_insert_front_2() {
         head = head->next;
     }
     printf("test_list_insert_front_2: PASS\n");
+}
+
+
+/* reverse list */
+void test_list_reverse_1() {
+    ListNode *head = (ListNode *) malloc(sizeof(ListNode));
+    ListNode *node1 = (ListNode *) malloc(sizeof(ListNode));
+    head->val = 1;
+    head->next = node1;
+    node1->val = 2;
+    list_reverse(&head);
+    for (int i = 2; head != NULL; i--) {
+        if (i < 1 || head->val != i) {
+            printf("test_list_reverse_1: FAILED\n");
+            return;
+        }
+        head = head->next;
+    }
+    printf("test_list_reverse_1: PASS\n");
+}
+
+
+/* reverse an empty list (NULL pointer) */
+void test_list_reverse_2() {
+    ListNode *head = NULL;
+    list_reverse(&head);
+    if (head != NULL)
+        printf("test_list_reverse_2: FAILED\n");
+    else
+        printf("test_list_reverse_2: PASS\n");
+}
+
+
+/* copy an empty list (NULL pointer) */
+void test_list_copy_1() {
+    ListNode *head = NULL;
+    ListNode *copy = list_copy(head);
+    if (copy != NULL)
+        printf("test_list_copy_1: FAILED\n");
+    else
+        printf("test_list_copy_1: PASS\n");
+}
+
+
+/* copy a list */
+void test_list_copy_2() {
+    ListNode *head = (ListNode *) malloc(sizeof(ListNode));
+    ListNode *node1 = (ListNode *) malloc(sizeof(ListNode));
+    head->val = 1;
+    head->next = node1;
+    node1->val = 2;
+    ListNode *copy = list_copy(head);
+    for (int i = 1; copy != NULL; i++) {
+        if (i > 2 || copy->val != i) {
+            printf("test_list_copy_2: FAILED\n");
+            return;
+        }
+        copy = copy->next;
+    }
+    printf("test_list_copy_2: PASS\n");
 }
 
 
@@ -337,5 +397,9 @@ int main(int argc, char *argv[]) {
     test_list_insert_3();
     test_list_insert_front_1();
     test_list_insert_front_2();
+    test_list_reverse_1();
+    test_list_reverse_2();
+    test_list_copy_1();
+    test_list_copy_2();
     return 0;
 }
