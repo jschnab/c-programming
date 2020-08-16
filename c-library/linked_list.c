@@ -8,93 +8,98 @@ typedef struct lnode {
 } ListNode;
 
 
-ListNode *append(ListNode *, int);
-ListNode *delete2(ListNode *, int);
-void delete(ListNode *, int);
-char equal(ListNode *, ListNode *);
-ListNode *insert2(ListNode *, int, int);
-void insert(ListNode *, int, int);
-void insert_front(ListNode **, int);
-int length(ListNode *);
-void print_list(ListNode *);
-void reverse(ListNode **);
-ListNode *copy_list(ListNode *head);
+ListNode *list_append(ListNode *, int);
+void list_delete(ListNode *, int);
+char list_equal(ListNode *, ListNode *);
+void list_insert(ListNode *, int, int);
+void list_insert_front(ListNode **, int);
+int list_length(ListNode *);
+void list_print(ListNode *);
+void list_reverse(ListNode **);
+ListNode *list_copy(ListNode *);
+void list_to_array(ListNode *, int *);
 
 
-int main(int argc, char *argv[]) {
+int other_main(int argc, char *argv[]) {
     ListNode *head = (ListNode *) malloc(sizeof(ListNode));
     if (head != NULL) {
         head->val = 1;
     }
-    append(head, 2);
-    append(head, 3);
+    list_append(head, 2);
+    list_append(head, 3);
     printf("original list: ");
-    print_list(head);
-    printf("length = %d\n", length(head));
+    list_print(head);
+    printf("length = %d\n", list_length(head));
+    printf("\n");
+
+    printf("convert list to array\n");
+    int array[3];
+    list_to_array(head, array);
+    for (int i = 0; i < 3; i++)
+        printf("array[%d] = %d\n", i, array[i]);
     printf("\n");
 
     int n = 5;
     printf("deleting node at index %d: ", n);
-    delete(head, n);
-    print_list(head);
-    printf("length = %d\n", length(head));
+    list_delete(head, n);
+    list_print(head);
+    printf("length = %d\n", list_length(head));
     printf("\n");
 
     n = 9;
     printf("inserting %d at the front\n", n);
-    insert_front(&head, n);
-    print_list(head);
-    printf("length = %d\n", length(head));
+    list_insert_front(&head, n);
+    list_print(head);
+    printf("length = %d\n", list_length(head));
     printf("\n");
 
     printf("reverse list: ");
-    reverse(&head);
-    print_list(head);
+    list_reverse(&head);
+    list_print(head);
     printf("\n");
 
     n = 5;
     printf("inserting value 4 at index %d: ", n);
-    insert(head, 4, n);
-    print_list(head);
-    printf("length = %d\n", length(head));
+    list_insert(head, 4, n);
+    list_print(head);
+    printf("length = %d\n", list_length(head));
     printf("\n");
 
     printf("copy list: ");
-    ListNode *copy = copy_list(head);
-    print_list(copy);
-    printf("length = %d\n", length(copy));
+    ListNode *copy = list_copy(head);
+    list_print(copy);
+    printf("length = %d\n", list_length(copy));
     printf("\n");
 
     ListNode *other = (ListNode *) malloc(sizeof(ListNode));
     other->val = 1;
-    append(other, 3);
-    append(other, 4);
+    list_append(other, 3);
+    list_append(other, 4);
     printf("comparing two lists:\n");
     printf("list 1: ");
-    print_list(head);
+    list_print(head);
     printf("list 2: ");
-    print_list(other);
-    printf("list 1 %s list 2\n", equal(head, other) ? "=" : "!=");
+    list_print(other);
+    printf("list 1 %s list 2\n", list_equal(head, other) ? "=" : "!=");
     printf("\n");
 
     ListNode *another = (ListNode *) malloc(sizeof(ListNode));
     another->val = 1;
-    append(another, 3);
-    append(another, 5);
+    list_append(another, 3);
+    list_append(another, 5);
     printf("comparing two lists:\n");
     printf("list 1: ");
-    print_list(head);
+    list_print(head);
     printf("list 2: ");
-    print_list(another);
-    printf("list 1 %s list 2\n", equal(head, another) ? "=" : "!=");
+    list_print(another);
+    printf("list 1 %s list 2\n", list_equal(head, another) ? "=" : "!=");
 
-    free(head);
     return 0;
 }
 
 
 /* append a node storing x at the end of the list */
-ListNode *append(ListNode *head, int x) {
+ListNode *list_append(ListNode *head, int x) {
     ListNode *new = (ListNode *) malloc(sizeof(ListNode));
     if (new == NULL)
         return NULL;
@@ -114,7 +119,7 @@ ListNode *append(ListNode *head, int x) {
 
 /* delete the nth element of a list
  * if n > length of list, do nothing */
-void delete(ListNode *head, int n) {
+void list_delete(ListNode *head, int n) {
     if (n == 0) {
         *head = *(head->next); 
         return;
@@ -130,8 +135,8 @@ void delete(ListNode *head, int n) {
 
 
 /* determines if two list are identical */
-char equal(ListNode *a, ListNode *b) {
-    if (length(a) != length(b))
+char list_equal(ListNode *a, ListNode *b) {
+    if (list_length(a) != list_length(b))
         return 0;
     while (a != NULL) {
         if (a->val != b->val)
@@ -145,7 +150,7 @@ char equal(ListNode *a, ListNode *b) {
 
 /* insert a value at a specific index where index > 0
  * if n > length list, value is inserted at the end */
-void insert(ListNode *head, int val, int n) {
+void list_insert(ListNode *head, int val, int n) {
     if (head != NULL && n > 0) {
         ListNode *previous;
         ListNode *new = (ListNode *) malloc(sizeof(ListNode));
@@ -162,7 +167,7 @@ void insert(ListNode *head, int val, int n) {
 
 
 /* insert a value at the front of the list (index 0) */
-void insert_front(ListNode **head, int val) {
+void list_insert_front(ListNode **head, int val) {
     ListNode *new = (ListNode *) malloc(sizeof(ListNode));
     new->val = val;
     new->next = *head;
@@ -172,7 +177,7 @@ void insert_front(ListNode **head, int val) {
 
 
 /* return the number of nodes in the list */
-int length(ListNode *head) {
+int list_length(ListNode *head) {
     if (head == NULL)
         return 0;
     int n = 0;
@@ -185,7 +190,7 @@ int length(ListNode *head) {
 
 
 /* print values stored in the list */
-void print_list(ListNode *head) {
+void list_print(ListNode *head) {
     while (head != NULL) {
         printf((head->next != NULL) ? "%d -> " : "%d\n", head->val);
         head = head->next;
@@ -194,7 +199,7 @@ void print_list(ListNode *head) {
 
 
 /* reverse a list */
-void reverse(ListNode **head) {
+void list_reverse(ListNode **head) {
     ListNode *reverse = NULL;
     ListNode *next;
     ListNode *current = *head;
@@ -209,7 +214,7 @@ void reverse(ListNode **head) {
 
 
 /* copies a list */
-ListNode *copy_list(ListNode *head) {
+ListNode *list_copy(ListNode *head) {
     if (head != NULL) {
         ListNode *new = (ListNode *) malloc(sizeof(ListNode));
         new->val = head->val;
@@ -223,6 +228,14 @@ ListNode *copy_list(ListNode *head) {
         return new;
     }
     return NULL;
+}
+
+
+void list_to_array(ListNode *head, int *array) {
+    while (head) {
+        *array++ = head->val;
+        head = head->next;
+    }
 }
 
 
