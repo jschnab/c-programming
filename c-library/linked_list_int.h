@@ -1,11 +1,10 @@
 typedef struct lnode {
-    void *val;
+    int val;
     struct lnode *next;  /* remember memory for this is not allocated */
 } ListNode;
 
 
-void list_append(ListNode *, void *, size_t);
-/*
+void list_append(ListNode *, int);
 ListNode *list_copy(ListNode *);
 void list_delete(ListNode *, int);
 char list_equal(ListNode *, ListNode *);
@@ -16,4 +15,3 @@ int list_length(ListNode *);
 void list_print(ListNode *);
 void list_reverse(ListNode **);
 void list_to_array(ListNode *, int *);
-*/
