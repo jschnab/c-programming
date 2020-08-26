@@ -5,9 +5,9 @@ typedef struct lnode {
 
 
 void list_append(ListNode *, void *, size_t);
-/*
 ListNode *list_copy(ListNode *);
 void list_delete(ListNode *, int);
+/*
 char list_equal(ListNode *, ListNode *);
 ListNode *list_from_args(int, ...);
 void list_insert(ListNode *, int, int);
