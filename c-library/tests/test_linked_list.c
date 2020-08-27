@@ -8,7 +8,8 @@ void test_list_append_1() {
     ListNode *head = (ListNode *) malloc(sizeof(ListNode));
     float values[] = {1, 2};
     head->val = &values[0];
-    list_append(head, &values[1], sizeof(float));
+    head->type = FLOAT;
+    list_append(head, &values[1], sizeof(float), FLOAT);
     for (float i = 1.0; head != NULL; i++) {
         if (i > 2.0 || *(float *)head->val != i) {
             printf("test_list_append_1: FAILED\n");
@@ -25,7 +26,8 @@ void test_list_append_2() {
     ListNode *head = (ListNode *) malloc(sizeof(ListNode));
     int values[2] = {1, 2};
     head->val = &values[0];
-    list_append(head, &values[1], sizeof(int));
+    head->type = INT;
+    list_append(head, &values[1], sizeof(int), INT);
     for (int i = 1; head != NULL; i++) {
         if (i > 2 || *(int *)head->val != i) {
             printf("test_list_append_2: FAILED\n");
@@ -54,8 +56,10 @@ void test_list_copy_2() {
     ListNode *node1 = (ListNode *) malloc(sizeof(ListNode));
     float values[] = {1.0, 2.0};
     head->val = &values[0];
+    head->type = FLOAT;
     head->next = node1;
     node1->val = &values[1];
+    node1->type = FLOAT;
     ListNode *copy = list_copy(head);
     for (float i = 1.0; copy != NULL; i++) {
         if (i > 2.0 || *(float *)copy->val != i) {
@@ -77,8 +81,11 @@ void test_list_delete_1() {
     node1->next = node2;
     float values[] = {1, 3, 2};
     head->val = &values[0];
+    head->type = FLOAT;
     node1->val = &values[1];
+    node1->type = FLOAT;
     node2->val = &values[2];
+    node2->type = FLOAT;
     list_delete(head, 1);
     for (float i = 1.0; head != NULL; i++) {
         if (i > 2.0 || *(float *)head->val != i) {
@@ -100,8 +107,11 @@ void test_list_delete_2() {
     node1->next = node2;
     float values[] = {0, 1, 2};
     head->val = &values[0];
+    head->type = FLOAT;
     node1->val = &values[1];
+    node1->type = FLOAT;
     node2->val = &values[2];
+    node2->type = FLOAT;
     list_delete(head, 0);
     for (float i = 1.0; head != NULL; i++) {
         if (i > 2.0 || *(float *)head->val != i) {
@@ -123,8 +133,11 @@ void test_list_delete_3() {
     node1->next = node2;
     float values[] = {1, 2, 3};
     head->val = &values[0];
+    head->type = FLOAT;
     node1->val = &values[1];
+    node1->type = FLOAT;
     node2->val = &values[2];
+    node2->type = FLOAT;
     list_delete(head, 2);
     for (float i = 1.0; head != NULL; i++) {
         if (i > 2.0 || *(float *)head->val != i) {
@@ -146,8 +159,11 @@ void test_list_delete_4() {
     node1->next = node2;
     float values[] = {1, 2, 3};
     head->val = &values[0];
+    head->type = FLOAT;
     node1->val = &values[1];
+    node1->type = FLOAT;
     node2->val = &values[2];
+    node2->type = FLOAT;
     list_delete(head, 3);
     for (float i = 1.0; head != NULL; i++) {
         if (i > 3.0 || *(float *)head->val != i) {
@@ -160,6 +176,40 @@ void test_list_delete_4() {
 }
 
 
+/* length of list containing 1 node */
+void test_list_length_1() {
+    ListNode *head = (ListNode *) malloc(sizeof(ListNode));
+    if (list_length(head) != 1)
+        printf("test_list_length_1: FAILED\n");
+    else
+        printf("test_list_length_1: PASS\n");
+}
+
+
+/* length of empty list (NULL pointer) */
+void test_list_length_2() {
+    ListNode *head = NULL;
+    if (list_length(head) != 0)
+        printf("test_list_length_2: FAILED\n");
+    else
+        printf("test_list_length_2: PASS\n");
+}
+
+
+void test_list_print() {
+    ListNode *head = (ListNode *) malloc(sizeof(ListNode));
+    ListNode *node1 = (ListNode *) malloc(sizeof(ListNode));
+    char *s1 = "hello";
+    char *s2 = "world";
+    head->val = s1;
+    head->type = STRING;
+    head->next = node1;
+    node1->val = s2;
+    node1->type = STRING;
+    list_print(head);
+}
+
+
 int main(int argc, char *argv[]) {
     test_list_append_1();
     test_list_append_2();
@@ -169,5 +219,7 @@ int main(int argc, char *argv[]) {
     test_list_delete_2();
     test_list_delete_3();
     test_list_delete_4();
+    test_list_length_1();
+    test_list_length_2();
     return 0;
 }
