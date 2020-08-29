@@ -4,21 +4,25 @@
 #include "../linked_list.h"
 
 
+static int n_fail = 0;
+
+
 /* append float to list of length 1 */
 void test_list_append_1() {
     ListNode *head = (ListNode *) malloc(sizeof(ListNode));
     float values[] = {1, 2};
     head->val = &values[0];
     head->type = FLOAT;
-    list_append(head, &values[1], sizeof(float), FLOAT);
+    list_append(head, &values[1], FLOAT);
     for (float i = 1.0; head != NULL; i++) {
-        if (i > 2.0 || *(float *)head->val != i) {
-            printf("test_list_append_1: FAILED\n");
+        if (i > 2.0 || *(float *)head->val != i || head->type != FLOAT) {
+            printf("test_list_append_4: FAILED\n");
+            n_fail++;
             return;
         }
         head = head->next;
     }
-    printf("test_list_append_1: PASS\n");
+    printf("test_list_append_4: PASS\n");
 }
 
 
@@ -28,15 +32,35 @@ void test_list_append_2() {
     int values[2] = {1, 2};
     head->val = &values[0];
     head->type = INT;
-    list_append(head, &values[1], sizeof(int), INT);
+    list_append(head, &values[1], INT);
     for (int i = 1; head != NULL; i++) {
-        if (i > 2 || *(int *)head->val != i) {
-            printf("test_list_append_2: FAILED\n");
+        if (i > 2 || *(int *)head->val != i || head->type != INT) {
+            printf("test_list_append_5: FAILED\n");
+            n_fail++;
             return;
         }
         head = head->next;
     }
-    printf("test_list_append_2: PASS\n");
+    printf("test_list_append_5: PASS\n");
+}
+
+
+/* append string to list of length 1 */
+void test_list_append_3() {
+    ListNode *head = (ListNode *) malloc(sizeof(ListNode));
+    char *values[] = {"hello", "world"};
+    head->val = values[0];
+    head->type = STRING;
+    list_append(head, values[1], STRING);
+    for (int i = 0; head != NULL; i++) {
+        if (i > 1 || strcmp(head->val, values[i]) != 0 || head->type != STRING) {
+            printf("test_list_append_6: FAILED\n");
+            n_fail++;
+            return;
+        }
+        head = head->next;
+    }
+    printf("test_list_append_6: PASS\n");
 }
 
 
@@ -44,8 +68,10 @@ void test_list_append_2() {
 void test_list_copy_1() {
     ListNode *head = NULL;
     ListNode *copy = list_copy(head);
-    if (copy != NULL)
+    if (copy != NULL) {
         printf("test_list_copy_1: FAILED\n");
+        n_fail++;
+    }
     else
         printf("test_list_copy_1: PASS\n");
 }
@@ -65,6 +91,7 @@ void test_list_copy_2() {
     for (float i = 1.0; copy != NULL; i++) {
         if (i > 2.0 || *(float *)copy->val != i || copy->type != head->type) {
             printf("test_list_copy_2: FAILED\n");
+            n_fail++;
             return;
         }
         copy = copy->next;
@@ -92,6 +119,7 @@ void test_list_delete_1() {
     for (float i = 1.0; head != NULL; i++) {
         if (i > 2.0 || *(float *)head->val != i) {
             printf("test_list_delete_1: FAILED\n");
+            n_fail++;
             return;
         }
         head = head->next;
@@ -118,6 +146,7 @@ void test_list_delete_2() {
     for (float i = 1.0; head != NULL; i++) {
         if (i > 2.0 || *(float *)head->val != i) {
             printf("test_list_delete_2: FAILED\n");
+            n_fail++;
             return;
         }
         head = head->next;
@@ -144,6 +173,7 @@ void test_list_delete_3() {
     for (float i = 1.0; head != NULL; i++) {
         if (i > 2.0 || *(float *)head->val != i) {
             printf("test_list_delete_3: FAILED\n");
+            n_fail++;
             return;
         }
         head = head->next;
@@ -170,6 +200,7 @@ void test_list_delete_4() {
     for (float i = 1.0; head != NULL; i++) {
         if (i > 3.0 || *(float *)head->val != i) {
             printf("test_list_delete_4: FAILED\n");
+            n_fail++;
             return;
         }
         head = head->next;
@@ -198,8 +229,10 @@ void test_list_equal_1() {
     B1->next = B2;
     if (list_equal(A, B) == 1)
         printf("test_list_equal_1: PASS\n");
-    else
+    else {
         printf("test_list_equal_1: FAILED\n");
+        n_fail++;
+    }
 }
 
 
@@ -221,8 +254,10 @@ void test_list_equal_2() {
     B->next = B1;
     if (list_equal(A, B) == 0)
         printf("test_list_equal_2: PASS\n");
-    else
+    else {
         printf("test_list_equal_2: FAILED\n");
+        n_fail++;
+    }
 }
 
 
@@ -247,8 +282,10 @@ void test_list_equal_3() {
     B1->next = B2;
     if (list_equal(A, B) == 0)
         printf("test_list_equal_3: PASS\n");
-    else
+    else {
         printf("test_list_equal_3: FAILED\n");
+        n_fail++;
+    }
 }
 
 
@@ -256,11 +293,13 @@ void test_list_equal_3() {
 void test_list_insert_1() {
     ListNode *head = NULL;
     int val = 1;
-    list_insert(head, &val, sizeof(int), INT, 1);
+    list_insert(head, &val, INT, 1);
     if (head == NULL)
         printf("test_list_insert_1: PASS\n");
-    else
+    else {
         printf("test_list_insert_1: FAILED\n");
+        n_fail++;
+    }
 }
 
 
@@ -269,10 +308,11 @@ void test_list_insert_2() {
     ListNode *head = (ListNode *) malloc(sizeof(ListNode));
     float values[] = {1.0, 2.0};
     head->val = &values[0];
-    list_insert(head, &values[1], sizeof(float), FLOAT, 0);
+    list_insert(head, &values[1], FLOAT, 0);
     for (float i = 1.0; head != NULL; i++) {
         if (i > 1.0 || *(float *)head->val != i) {
             printf("test_list_insert_2: FAILED\n");
+            n_fail++;
             return;
         }
         head = head->next;
@@ -291,10 +331,11 @@ void test_list_insert_3() {
     head->next = node1;
     node1->val = &values[2];
     node1->type = FLOAT;
-    list_insert(head, &values[1], sizeof(float), FLOAT, 1);
+    list_insert(head, &values[1], FLOAT, 1);
     for (float i = 1.0; head != NULL; i++) {
         if (i > 3.0 || *(float *)head->val != i || head->type != FLOAT) {
             printf("test_list_insert_3: FAILED\n");
+            n_fail++;
             return;
         }
         head = head->next;
@@ -303,16 +344,17 @@ void test_list_insert_3() {
 }
 
 
-/* insert node at front of list */
+/* insert float node at front of list */
 void test_list_insert_front_1() {
     ListNode *head = (ListNode *) malloc(sizeof(ListNode));
     float values[] = {1.0, 2.0};
     head->val = &values[1];
     head->type = FLOAT;
-    list_insert_front(&head, &values[0], sizeof(float), FLOAT);
+    list_insert_front(&head, &values[0], FLOAT);
     for (float i = 1.0; head != NULL; i++) {
         if (i > 2.0 || *(float *)head->val != i || head->type != FLOAT) {
             printf("test_list_insert_front_1: FAILED\n");
+            n_fail++;
             return;
         }
         head = head->next;
@@ -321,14 +363,15 @@ void test_list_insert_front_1() {
 }
 
 
-/* insert node at front of empty list (NULL pointer) */
+/* insert float node at front of empty list (NULL pointer) */
 void test_list_insert_front_2() {
     ListNode *head = NULL;
     float value = 1.0;
-    list_insert_front(&head, &value, sizeof(float), FLOAT);
+    list_insert_front(&head, &value, FLOAT);
     for (float i = 1.0; head != NULL; i++) {
         if (i > 1.0 || *(float *)head->val != i || head->type != FLOAT) {
             printf("test_list_insert_front_2: FAILED\n");
+            n_fail++;
             return;
         }
         head = head->next;
@@ -337,11 +380,85 @@ void test_list_insert_front_2() {
 }
 
 
+/* insert int node at from of list */
+void test_list_insert_front_3() {
+    ListNode *head = (ListNode *) malloc(sizeof(ListNode));
+    int values[] = {1, 2};
+    head->val = &values[1];
+    head->type = INT;
+    list_insert_front(&head, &values[0], INT);
+    for (int i = 1; head != NULL; i++) {
+        if (i > 2 || *(int *)head->val != i || head->type != INT) {
+            printf("test_list_insert_front_3: FAILED\n");
+            n_fail++;
+            return;
+        }
+        head = head->next;
+    }
+    printf("test_list_insert_front_3: PASS\n");
+}
+
+
+/* insert int node at front of empty list (NULL pointer) */
+void test_list_insert_front_4() {
+    ListNode *head = NULL;
+    int value = 1;
+    list_insert_front(&head, &value, INT);
+    for (int i = 1; head != NULL; i++) {
+        if (i > 1 || *(int *)head->val != i || head->type != INT) {
+            printf("test_list_insert_front_4: FAILED\n");
+            n_fail++;
+            return;
+        }
+        head = head->next;
+    }
+    printf("test_list_insert_front_4: PASS\n");
+}
+
+
+/* insert string node at from of list */
+void test_list_insert_front_5() {
+    ListNode *head = (ListNode *) malloc(sizeof(ListNode));
+    char *values[] = {"hello", "world"};
+    head->val = values[1];
+    head->type = STRING;
+    list_insert_front(&head, values[0], STRING);
+    for (int i = 0; head != NULL; i++) {
+        if (i > 1 || strcmp((char *)head->val, values[i]) != 0 || head->type != STRING) {
+            printf("test_list_insert_front_5: FAILED\n");
+            n_fail++;
+            return;
+        }
+        head = head->next;
+    }
+    printf("test_list_insert_front_5: PASS\n");
+}
+
+
+/* insert int node at front of empty list (NULL pointer) */
+void test_list_insert_front_6() {
+    ListNode *head = NULL;
+    char *values[] = {"hello"};
+    list_insert_front(&head, values[0], STRING);
+    for (int i = 0; head != NULL; i++) {
+        if (i > 0 || strcmp((char *)head->val, values[i]) != 0 || head->type != STRING) {
+            printf("test_list_insert_front_6: FAILED\n");
+            n_fail++;
+            return;
+        }
+        head = head->next;
+    }
+    printf("test_list_insert_front_6: PASS\n");
+}
+
+
 /* length of list containing 1 node */
 void test_list_length_1() {
     ListNode *head = (ListNode *) malloc(sizeof(ListNode));
-    if (list_length(head) != 1)
+    if (list_length(head) != 1) {
         printf("test_list_length_1: FAILED\n");
+        n_fail++;
+    }
     else
         printf("test_list_length_1: PASS\n");
 }
@@ -350,8 +467,10 @@ void test_list_length_1() {
 /* length of empty list (NULL pointer) */
 void test_list_length_2() {
     ListNode *head = NULL;
-    if (list_length(head) != 0)
+    if (list_length(head) != 0) {
         printf("test_list_length_2: FAILED\n");
+        n_fail++;
+    }
     else
         printf("test_list_length_2: PASS\n");
 }
@@ -371,6 +490,7 @@ void test_list_reverse_1() {
     for (float i = 2.0; head != NULL; i--) {
         if (i < 1.0 || *(float *)head->val != i || head->type != FLOAT) {
             printf("test_list_reverse_1: FAILED\n");
+            n_fail++;
             return;
         }
         head = head->next;
@@ -383,8 +503,10 @@ void test_list_reverse_1() {
 void test_list_reverse_2() {
     ListNode *head = NULL;
     list_reverse(&head);
-    if (head != NULL)
+    if (head != NULL) {
         printf("test_list_reverse_2: FAILED\n");
+        n_fail++;
+    }
     else
         printf("test_list_reverse_2: PASS\n");
 }
@@ -397,6 +519,7 @@ void test_list_to_array_1() {
     list_to_array(head, array, FLOAT);
     if (array[0] != -999.0) {
         printf("test_list_to_array_1: FAILED\n");
+        n_fail++;
         return;
     }
     printf("test_list_to_array_1: PASS\n");
@@ -420,6 +543,7 @@ void test_list_to_array_2() {
     for (int i = 1; i <= 3; i++) {
         if (array[i-1] != (float)i) {
             printf("test_list_to_array_2: FAILED\n");
+            n_fail++;
             return;
         }
     }
@@ -444,6 +568,7 @@ void test_list_to_array_3() {
     for (int i = 1; i <= 3; i++) {
         if (array[i-1] != i) {
             printf("test_list_to_array_3: FAILED\n");
+            n_fail++;
             return;
         }
     }
@@ -468,10 +593,57 @@ void test_list_to_strarray_1() {
     for (int i = 0; i < 3; i++) {
         if (strcmp(array[i], values[i]) != 0) {
             printf("test_list_to_strarray_1: FAILED\n");
+            n_fail++;
             return;
         }
     }
     printf("test_list_to_array_1: PASS\n");
+}
+
+
+/* make a integer list from a sequence of numbers */
+void test_list_from_args_1() {
+    ListNode *head = list_from_args(3, INT, 1, 2, 3);
+    for (int i = 1; head != NULL; i++) {
+        if (i > 3 || *(int *)head->val != i || head->type != INT) {
+            printf("test_list_from_args_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+        head = head->next;
+    }
+    printf("test_list_from_args_1: PASS\n");
+}
+
+
+/* make a float list from a sequence of numbers */
+void test_list_from_args_2() {
+    ListNode *head = list_from_args(3, FLOAT, 1.0, 2.0, 3.0);
+    for (float i = 1.0; head != NULL; i++) {
+        if (i > 3.0 || *(float *)head->val != i || head->type != FLOAT) {
+            printf("test_list_from_args_2: FAILED\n");
+            n_fail++;
+            return;
+        }
+        head = head->next;
+    }
+    printf("test_list_from_args_2: PASS\n");
+}
+
+
+/* make a string list from a sequence of words */
+void test_list_from_args_3() {
+    char *words[] = {"brave", "new", "world"};
+    ListNode *head = list_from_args(3, STRING, "brave", "new", "world");
+    for (int i = 0; head != NULL; i++) {
+        if (i > 2 || strcmp((char *)head->val, words[i]) != 0 || head->type != STRING) {
+            printf("test_list_from_args_3: FAILED\n");
+            n_fail++;
+            return;
+        }
+        head = head->next;
+    }
+    printf("test_list_from_args_3: PASS\n");
 }
 
 
@@ -490,8 +662,10 @@ void test_list_print() {
 
 
 int main(int argc, char *argv[]) {
+    printf("Running tests on linked lists functions...\n\n");
     test_list_append_1();
     test_list_append_2();
+    test_list_append_3();
     test_list_copy_1();
     test_list_copy_2();
     test_list_delete_1();
@@ -501,11 +675,18 @@ int main(int argc, char *argv[]) {
     test_list_equal_1();
     test_list_equal_2();
     test_list_equal_3();
+    test_list_from_args_1();
+    test_list_from_args_2();
+    test_list_from_args_3();
     test_list_insert_1();
     test_list_insert_2();
     test_list_insert_3();
     test_list_insert_front_1();
     test_list_insert_front_2();
+    test_list_insert_front_3();
+    test_list_insert_front_4();
+    test_list_insert_front_5();
+    test_list_insert_front_6();
     test_list_length_1();
     test_list_length_2();
     test_list_reverse_1();
@@ -514,5 +695,6 @@ int main(int argc, char *argv[]) {
     test_list_to_array_2();
     test_list_to_array_3();
     test_list_to_strarray_1();
+    printf("\nTests finished.\nNumber of failures: %d\n", n_fail);
     return 0;
 }

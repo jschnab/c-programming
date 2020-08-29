@@ -12,15 +12,13 @@ typedef struct lnode {
 } ListNode;
 
 
-void list_append(ListNode *, void *, size_t, char);
+void list_append(ListNode *, void *, char);
 ListNode *list_copy(ListNode *);
 void list_delete(ListNode *, int);
 char list_equal(ListNode *, ListNode *);
-/*
-ListNode *list_from_args(int, ...);
-*/
-void list_insert(ListNode *, void *, size_t, char, int);
-void list_insert_front(ListNode **, void *, size_t, char);
+ListNode *list_from_args(int, char, ...);
+void list_insert(ListNode *, void *, char, int);
+void list_insert_front(ListNode **, void *, char);
 int list_length(ListNode *);
 void list_print(ListNode *);
 void list_reverse(ListNode **);

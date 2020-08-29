@@ -18,12 +18,12 @@ typedef struct lnode {
 } ListNode;
 
 
-void list_append(ListNode *, void *, size_t, char);
+void list_append(ListNode *, void *, char);
 ListNode *list_copy(ListNode *);
 void list_delete(ListNode *, int);
 char list_equal(ListNode *, ListNode *);
-void list_insert(ListNode *, void *, size_t, char, int);
-void list_insert_front(ListNode **, void *, size_t, char);
+void list_insert(ListNode *, void *, char, int);
+void list_insert_front(ListNode **, void *, char);
 int list_length(ListNode *);
 void list_print(ListNode *);
 void list_reverse(ListNode **);
@@ -32,16 +32,29 @@ void list_to_strarray(ListNode *head, char *array[]);
 
 
 /* append a node storing x at the end of the list */
-void list_append(ListNode *head, void *val, size_t size, char type) {
+void list_append(ListNode *head, void *val, char type) {
     if (head == NULL)
         return;
 
     ListNode *new = (ListNode *) malloc(sizeof(ListNode));
     if (new == NULL)
         return;
-    new->val = malloc(size);
+
+    switch (type) {
+        case INT:
+            new->val = malloc(sizeof(int));
+            memcpy(new->val, val, sizeof(int));
+            break;
+        case FLOAT:
+            new->val = malloc(sizeof(float));
+            memcpy(new->val, val, sizeof(float));
+            break;
+        case STRING:
+            new->val = malloc(strlen((char *)val));
+            memcpy(new->val, val, strlen((char *)val));
+            break;
+    }
     new->type = type;
-    memcpy(new->val, val, size);
     ListNode *current;
     current = head;
     while (current->next != NULL)
@@ -119,14 +132,93 @@ char list_equal(ListNode *a, ListNode *b) {
 }
 
 
+/* make a list from a variable number of arguments */
+ListNode *list_from_args(int n, char type, ...) {
+    if (n-- > 0) {
+        int i;
+        float f;
+        char *s;
+        va_list values;
+        va_start(values, type);
+        ListNode *head = (ListNode *) malloc(sizeof(ListNode));
+        head->type = type;
+
+        switch (type) {
+            case INT:
+                i = va_arg(values, int);
+                head->val = malloc(sizeof(int));
+                memcpy(head->val, &i, sizeof(int));;
+                break;
+            case FLOAT:
+                f = (float) va_arg(values, double);
+                head->val = malloc(sizeof(float));
+                memcpy(head->val, &f, sizeof(float));
+                break;
+            case STRING:
+                s = va_arg(values, char *);
+                head->val = malloc(strlen(s));
+                memcpy(head->val, s, strlen(s));
+                break;
+            default:
+                printf("list node type not supported\n");
+                return head;
+        }
+
+        ListNode *current = head;
+        while (n-- > 0) {
+            current->next = (ListNode *) malloc(sizeof(ListNode));
+            current = current->next;
+            current->type = type;
+
+            switch (type) {
+                case INT:
+                    i = va_arg(values, int);
+                    current->val = malloc(sizeof(int));
+                    memcpy(current->val, &i, sizeof(int));;
+                    break;
+                case FLOAT:
+                    f = (float) va_arg(values, double);
+                    current->val = malloc(sizeof(float));
+                    memcpy(current->val, &f, sizeof(float));
+                    break;
+                case STRING:
+                    s = va_arg(values, char *);
+                    current->val = malloc(strlen(s));
+                    memcpy(current->val, s, strlen(s));
+                    break;
+                default:
+                    printf("list node type not supported\n");
+                    return head;
+            }
+        }
+        va_end(values);
+        return head;
+    }
+    return NULL;
+}
+
+
 /* insert a value at a specific index where index > 0
  * if n > length list, value is inserted at the end */
-void list_insert(ListNode *head, void *val, size_t size, char type, int n) {
+void list_insert(ListNode *head, void *val, char type, int n) {
     if (head != NULL && n > 0) {
         ListNode *previous;
         ListNode *new = (ListNode *) malloc(sizeof(ListNode));
-        new->val = malloc(size);
-        memcpy(new->val, val, size);
+
+        switch (type) {
+            case INT:
+                new->val = malloc(sizeof(int));
+                memcpy(new->val, val, sizeof(int));
+                break;
+            case FLOAT:
+                new->val = malloc(sizeof(float));
+                memcpy(new->val, val, sizeof(float));
+                break;
+            case STRING:
+                new->val = malloc(strlen((char *)val));
+                memcpy(new->val, val, strlen((char *)val));
+                break;
+        }
         new->type = type;
 
         while (n-- > 0 && head != NULL) {
@@ -140,10 +232,22 @@ void list_insert(ListNode *head, void *val, size_t size, char type, int n) {
 
 
 /* insert a value at the front of the list (index 0) */
-void list_insert_front(ListNode **head, void *val, size_t size, char type) {
+void list_insert_front(ListNode **head, void *val, char type) {
     ListNode *new = (ListNode *) malloc(sizeof(ListNode));
-    new->val = malloc(size);
-    memcpy(new->val, val, size);
+    switch (type) {
+        case INT:
+            new->val = malloc(sizeof(int));
+            memcpy(new->val, val, sizeof(int));
+            break;
+        case FLOAT:
+            new->val = malloc(sizeof(float));
+            memcpy(new->val, val, sizeof(float));
+            break;
+        case STRING:
+            new->val = malloc(strlen((char *)val));
+            memcpy(new->val, val, strlen((char *)val));
+            break;
+    }
     new->type = type;
     new->next = *head;
     *head = new;
