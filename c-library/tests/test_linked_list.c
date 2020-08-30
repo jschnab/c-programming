@@ -128,7 +128,7 @@ void test_list_delete_1() {
 }
 
 
-/* delete first node */
+/* delete first node in list of three nodes*/
 void test_list_delete_2() {
     ListNode *head = (ListNode *) malloc(sizeof(ListNode));
     ListNode *node1 = (ListNode *) malloc(sizeof(ListNode));
@@ -380,7 +380,7 @@ void test_list_insert_front_2() {
 }
 
 
-/* insert int node at from of list */
+/* insert int node at front of list */
 void test_list_insert_front_3() {
     ListNode *head = (ListNode *) malloc(sizeof(ListNode));
     int values[] = {1, 2};

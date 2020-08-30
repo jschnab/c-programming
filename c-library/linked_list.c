@@ -87,7 +87,13 @@ ListNode *list_copy(ListNode *head) {
  * if n > length of list, do nothing */
 void list_delete(ListNode *head, int n) {
     if (n == 0) {
-        *head = *(head->next); 
+        if (head->next != NULL) {
+            ListNode *next = head->next;
+            *head = *(head->next); 
+            free(next);
+        }
+        else
+            printf("error: can't delete the only node of the list\n");
         return;
     } 
     ListNode *previous;
