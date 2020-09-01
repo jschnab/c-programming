@@ -19,15 +19,15 @@ typedef struct stack {
 } Stack;
 
 
-char isempty(Stack *);
-void *pop(Stack *);
-void push(Stack *, void *, char);
-char toptype(Stack *);
-void *topval(Stack *);
+char stack_isempty(Stack *);
+void *stack_pop(Stack *);
+void stack_push(Stack *, void *, char);
+char stack_toptype(Stack *);
+void *stack_topval(Stack *);
 
 
 /* returns 1 if the stack is empty else 0 */
-char isempty(Stack *stack) {
+char stack_isempty(Stack *stack) {
     if (stack->length > 0)
         return FALSE;
     return TRUE;
@@ -35,12 +35,12 @@ char isempty(Stack *stack) {
 
 /* returns a void pointer to the value item at the top of the stack
  * you should check the item type first, so you can cast the value */
-void *pop(Stack *stack) {
-    if (isempty(stack) == TRUE) {
+void *stack_pop(Stack *stack) {
+    if (stack_isempty(stack) == TRUE) {
         printf("error: can't pop empty stack\n");
         return NULL;
     }
-    char type = toptype(stack);
+    char type = stack_toptype(stack);
     void *value;
     switch (type) {
         case INT:
@@ -74,15 +74,15 @@ void *pop(Stack *stack) {
 
 
 /* push a value to the stack by passing a void pointer to it and the value type */
-void push(Stack *stack, void *item, char type) {
+void stack_push(Stack *stack, void *item, char type) {
     list_insert_front(&stack->items, item, type);
     stack->length++;
 }
 
 
 /* get the type of the item at the top of the stack */
-char toptype(Stack *stack) {
-    if (isempty(stack) == TRUE) {
+char stack_toptype(Stack *stack) {
+    if (stack_isempty(stack) == TRUE) {
         printf("error: stack is empty\n");
         return 0;
     }
@@ -91,8 +91,8 @@ char toptype(Stack *stack) {
 
 
 /* get the value of the item at the top of the stack (without popping) */
-void *topval(Stack *stack) {
-    if (isempty(stack) == TRUE) {
+void *stack_topval(Stack *stack) {
+    if (stack_isempty(stack) == TRUE) {
         printf("error: stack is empty\n");
         return NULL;
     }

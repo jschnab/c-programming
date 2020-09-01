@@ -10,7 +10,7 @@ static int n_fail = 0;
 /* test empty stack */
 void test_isempty_1() {
     Stack *stack = (Stack *) malloc(sizeof(Stack));
-    if (isempty(stack) == TRUE) {
+    if (stack_isempty(stack) == TRUE) {
         printf("test_isempty_1: PASS\n");
         return;
     }
@@ -23,8 +23,8 @@ void test_isempty_1() {
 void test_isempty_2() {
     Stack *stack = (Stack *) malloc(sizeof(Stack));
     int value = 1;
-    push(stack, &value, INT);
-    if (isempty(stack) == FALSE) {
+    stack_push(stack, &value, INT);
+    if (stack_isempty(stack) == FALSE) {
         printf("test_isempty_2: PASS\n");
         return;
     }
@@ -37,9 +37,9 @@ void test_isempty_2() {
 void test_pop_1() {
     Stack *stack = (Stack *) malloc(sizeof(Stack));
     int values[] = {1, 2};
-    push(stack, &values[0], INT);
-    push(stack, &values[1], INT);
-    if (*(int *) pop(stack) != 2) {
+    stack_push(stack, &values[0], INT);
+    stack_push(stack, &values[1], INT);
+    if (*(int *) stack_pop(stack) != 2) {
         printf("test_pop_1: FAILED\n");
         n_fail++;
         return;
@@ -52,14 +52,14 @@ void test_pop_1() {
 void test_pop_2() {
     Stack *stack = (Stack *) malloc(sizeof(Stack));
     int values[] = {1, 2};
-    push(stack, &values[0], INT);
-    push(stack, &values[1], INT);
-    if (*(int *) pop(stack) != 2) {
+    stack_push(stack, &values[0], INT);
+    stack_push(stack, &values[1], INT);
+    if (*(int *) stack_pop(stack) != 2) {
         printf("test_pop_2: FAILED\n");
         n_fail++;
         return;
     }
-    if (*(int *) pop(stack) != 1) {
+    if (*(int *) stack_pop(stack) != 1) {
         printf("test_pop_2: FAILED\n");
         n_fail++;
         return;
@@ -72,7 +72,7 @@ void test_pop_2() {
 void test_push_1() {
     Stack *stack = (Stack *) malloc(sizeof(Stack));
     int value = 1;
-    push(stack, &value, INT);
+    stack_push(stack, &value, INT);
     if (stack->length != 1 || *(int *) stack->items->val != 1) {
         printf("test_push_1: FAILED\n");
         n_fail++;
@@ -85,8 +85,8 @@ void test_push_1() {
 void test_push_2() {
     Stack *stack = (Stack *) malloc(sizeof(Stack));
     int values[] = {1, 2};
-    push(stack, &values[0], INT);
-    push(stack, &values[1], INT);
+    stack_push(stack, &values[0], INT);
+    stack_push(stack, &values[1], INT);
     if (
         stack->length != 2 ||
         *(int *) stack->items->val != 2 ||
@@ -104,9 +104,9 @@ void test_push_2() {
 void test_toptype_1() {
     Stack *stack = (Stack *) malloc(sizeof(Stack));
     int values[] = {1, 2};
-    push(stack, &values[0], INT);
-    push(stack, &values[1], INT);
-    if (toptype(stack) != INT) {
+    stack_push(stack, &values[0], INT);
+    stack_push(stack, &values[1], INT);
+    if (stack_toptype(stack) != INT) {
         printf("test_toptype_1: FAILED\n");
         n_fail++;
         return;
@@ -120,9 +120,9 @@ void test_toptype_2() {
     Stack *stack = (Stack *) malloc(sizeof(Stack));
     int i = 1;
     float f = 2;
-    push(stack, &i, INT);
-    push(stack, &f, FLOAT);
-    if (toptype(stack) != FLOAT) {
+    stack_push(stack, &i, INT);
+    stack_push(stack, &f, FLOAT);
+    if (stack_toptype(stack) != FLOAT) {
         printf("test_toptype_2: FAILED\n");
         n_fail++;
         return;
@@ -135,9 +135,9 @@ void test_toptype_2() {
 void test_topval_1() {
     Stack *stack = (Stack *) malloc(sizeof(Stack));
     int values[] = {1, 2};
-    push(stack, &values[0], INT);
-    push(stack, &values[1], INT);
-    if (*(int *) topval(stack) != 2) {
+    stack_push(stack, &values[0], INT);
+    stack_push(stack, &values[1], INT);
+    if (*(int *) stack_topval(stack) != 2) {
         printf("test_topval_1: FAILED\n");
         n_fail++;
         return;

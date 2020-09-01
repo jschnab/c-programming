@@ -16,8 +16,8 @@ typedef struct stack {
 } Stack;
 
 
-char isempty(Stack *);
-void *pop(Stack *);
-void push(Stack *, void *, char);
-char toptype(Stack *);
-void *topval(Stack *);
+char stack_isempty(Stack *);
+void *stack_pop(Stack *);
+void stack_push(Stack *, void *, char);
+char stack_toptype(Stack *);
+void *stack_topval(Stack *);
