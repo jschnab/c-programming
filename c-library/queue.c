@@ -82,6 +82,7 @@ char queue_typepeek(Queue *queue) {
 }
 
 
+/* get the value of the item next to be popped */
 void *queue_valpeek(Queue *queue) {
     if (queue->outstack == NULL)
         queue->outstack = (Stack *) malloc(sizeof(Stack));
@@ -89,6 +90,3 @@ void *queue_valpeek(Queue *queue) {
         _fill_outstack(queue);
     return stack_topval(queue->outstack);
 }
-
-
-

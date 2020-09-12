@@ -31,7 +31,7 @@ void list_to_array(ListNode *, void *, char type);
 void list_to_strarray(ListNode *head, char *array[]);
 
 
-/* append a node storing x at the end of the list */
+/* append a node storing x at the end of a non-null list */
 void list_append(ListNode *head, void *val, char type) {
     if (head == NULL)
         return;
@@ -84,7 +84,7 @@ ListNode *list_copy(ListNode *head) {
 
 
 /* delete the nth element of a list
- * if n > length of list, do nothing */
+ * if n > length of list or the node is the only one, do nothing */
 void list_delete(ListNode *head, int n) {
     if (n == 0) {
         if (head->next != NULL) {

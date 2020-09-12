@@ -19,11 +19,20 @@ typedef struct stack {
 } Stack;
 
 
+Stack *stack_init();
 char stack_isempty(Stack *);
 void *stack_pop(Stack *);
 void stack_push(Stack *, void *, char);
 char stack_toptype(Stack *);
 void *stack_topval(Stack *);
+
+
+/* initializes an empty stack */
+Stack *stack_init() {
+    Stack *stack = (Stack *) malloc(sizeof(Stack));
+    stack->length = 0;
+    return stack;
+}
 
 
 /* returns 1 if the stack is empty else 0 */
@@ -61,7 +70,7 @@ void *stack_pop(Stack *stack) {
     }
 
     /* if there is only one item, we directly delete it
-     * because functions on list nodes do not handle this */
+     * because lower-level functions on list nodes do not handle this */
     if (stack->length == 1) {
         free(stack->items);
         stack->items = NULL;
