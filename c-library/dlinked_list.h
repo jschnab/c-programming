@@ -13,4 +13,12 @@ typedef struct dlnode {
 } DListNode;
 
 
-void dlist_append(DListNode *, void *, char);
+typedef struct dlist {
+    DListNode *head;
+    DListNode *tail;
+    int n;
+} DList;
+
+
+DList *dlist_init();
+void dlist_append(DList *, void *, char);
