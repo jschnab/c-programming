@@ -8,18 +8,6 @@
 static int n_fail = 0;
 
 
-/* doubly-linked list is correcty initialized */
-void test_dlist_init_1() {
-    DList *list = dlist_init();
-    if (list == NULL || list->head != NULL || list->tail != NULL || list->n != 0) {
-        printf("test_dlist_init_1: FAILED\n");
-        n_fail++;
-        return;
-    }
-    printf("test_dlist_init_1: OK\n");
-}
-
-
 /* check integer node is correctly appended to empty list */
 void test_dlist_append_1() {
     DList *list = dlist_init();
@@ -30,7 +18,7 @@ void test_dlist_append_1() {
         n_fail++;
         return;
     }
-    printf("test_dlist_append_1: OK\n");
+    printf("test_dlist_append_1: PASS\n");
 }
 
 
@@ -69,7 +57,7 @@ void test_dlist_append_2() {
         }
         current = current->prev;
     }
-    printf("test_dlist_append_2: OK\n");
+    printf("test_dlist_append_2: PASS\n");
 }
 
 
@@ -83,7 +71,7 @@ void test_dlist_append_3() {
         n_fail++;
         return;
     }
-    printf("test_dlist_append_3: OK\n");
+    printf("test_dlist_append_3: PASS\n");
 }
 
 
@@ -122,7 +110,7 @@ void test_dlist_append_4() {
         }
         current = current->prev;
     }
-    printf("test_dlist_append_4: OK\n");
+    printf("test_dlist_append_4: PASS\n");
 }
 
 
@@ -140,7 +128,7 @@ void test_dlist_append_5() {
         n_fail++;
         return;
     }
-    printf("test_dlist_append_5: OK\n");
+    printf("test_dlist_append_5: PASS\n");
 }
 
 
@@ -179,19 +167,206 @@ void test_dlist_append_6() {
         }
         current = current->prev;
     }
-    printf("test_dlist_append_6: OK\n");
+    printf("test_dlist_append_6: PASS\n");
+}
+
+
+/* doubly-linked list is correcty initialized */
+void test_dlist_init_1() {
+    DList *list = dlist_init();
+    if (list == NULL || list->head != NULL || list->tail != NULL || list->n != 0) {
+        printf("test_dlist_init_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_init_1: PASS\n");
+}
+
+
+/* insert integer node in middle of linked list */
+void test_dlist_insert_1() {
+    DList *list = dlist_init();
+    int values[] = {2, 3, 4};
+    dlist_append(list, &values[0], INT);
+    dlist_append(list, &values[2], INT);
+    dlist_insert(&list, &values[1], INT, 1);
+
+    /* check list length */
+    if (list->n != 3) {
+        printf("test_dlist_insert_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+
+    int i;
+    DListNode *current;
+    /* traverse list from head to tail */
+    current = list->head;
+    for (i = 0; current != NULL; i++) {
+        if (*(int *)current->val != values[i] || i > 2) {
+            printf("test_dlist_insert_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    /* traverse list from tail to head */
+    current = list->tail;
+    for (i = 2; current != NULL; i--) {
+        if (*(int *)current->val != values[i] || i < 0) {
+            printf("test_dlist_insert_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    
+    printf("test_dlist_insert_1: PASS\n");
+}
+
+
+/* insert integer node at end of linked list */
+void test_dlist_insert_2() {
+    DList *list = dlist_init();
+    int values[] = {2, 3, 4};
+    dlist_append(list, &values[0], INT);
+    dlist_append(list, &values[1], INT);
+    dlist_insert(&list, &values[2], INT, 2);
+
+    /* check list length */
+    if (list->n != 3) {
+        printf("test_dlist_insert_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+
+    int i;
+    DListNode *current;
+    /* traverse list from head to tail */
+    current = list->head;
+    for (i = 0; current != NULL; i++) {
+        if (*(int *)current->val != values[i] || i > 2) {
+            printf("test_dlist_insert_2: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    /* traverse list from tail to head */
+    current = list->tail;
+    for (i = 2; current != NULL; i--) {
+        if (*(int *)current->val != values[i] || i < 0) {
+            printf("test_dlist_insert_2: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    
+    printf("test_dlist_insert_2: PASS\n");
+}
+
+
+/* insert integer node at beginning of linked list */
+void test_dlist_insert_3() {
+    DList *list = dlist_init();
+    int values[] = {2, 3, 4};
+    dlist_append(list, &values[1], INT);
+    dlist_append(list, &values[2], INT);
+    dlist_insert(&list, &values[0], INT, 0);
+
+    /* check list length */
+    if (list->n != 3) {
+        printf("test_dlist_insert_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+
+    int i;
+    DListNode *current;
+    /* traverse list from head to tail */
+    current = list->head;
+    for (i = 0; current != NULL; i++) {
+        if (*(int *)current->val != values[i] || i > 2) {
+            printf("test_dlist_insert_3: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    /* traverse list from tail to head */
+    current = list->tail;
+    for (i = 2; current != NULL; i--) {
+        if (*(int *)current->val != values[i] || i < 0) {
+            printf("test_dlist_insert_3: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    
+    printf("test_dlist_insert_3: PASS\n");
+}
+
+
+
+/* get length of list */
+void test_dlist_length_1() {
+    DList *list = dlist_init();
+    if (dlist_length(list) != 0) {
+        printf("test_dlist_length_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_length_1: PASS\n");
+}
+
+
+/* print list of integers */
+void test_dlist_print_1() {
+    DList *list = dlist_init();
+    int values[] = {2, 4, 6};
+    for (int i = 0; i <= 2; i++)
+        dlist_append(list, &values[i], INT);
+    dlist_print(list);
+}
+
+
+/* print list of floats */
+void test_dlist_print_2() {
+    DList *list = dlist_init();
+    float values[] = {3.14159, 6.28319, 12.56638};
+    for (int i = 0; i <= 2; i++)
+        dlist_append(list, &values[i], FLOAT);
+    dlist_print(list);
+}
+
+
+/* print list of strings */
+void test_dlist_print_3() {
+    DList *list = dlist_init();
+    char *values[] = {"brave", "new", "world"};
+    for (int i = 0; i <= 2; i++)
+        dlist_append(list, values[i], STRING);
+    dlist_print(list);
 }
 
 
 int main(int argc, char *argv[]) {
     printf("Running tests on doubly-linked list functions...\n\n");
-    test_dlist_init_1();
     test_dlist_append_1();
     test_dlist_append_2();
     test_dlist_append_3();
     test_dlist_append_4();
     test_dlist_append_5();
     test_dlist_append_6();
-
+    test_dlist_init_1();
+    test_dlist_insert_1();
+    test_dlist_insert_2();
+    test_dlist_insert_3();
+    test_dlist_length_1();
+    test_dlist_print_1();
+    test_dlist_print_2();
+    test_dlist_print_3();
     printf("\nTests finished.\nNumber of failures: %d\n", n_fail);
 }
