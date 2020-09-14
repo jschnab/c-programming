@@ -171,6 +171,114 @@ void test_dlist_append_6() {
 }
 
 
+/* check string type is correctly returned */
+void test_dlist_get_type_1() {
+    DList *list = dlist_init();
+    char *s = "hello";
+    int i = 5;
+    float f = 3.14;
+    dlist_append(list, s, STRING);
+    dlist_append(list, &i, INT);
+    dlist_append(list, &f, FLOAT);
+    if (dlist_get_type(list, 0) != STRING) {
+        printf("test_dlist_get_type_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_get_type_1: PASS\n");
+}
+
+
+/* check integer type is correctly returned */
+void test_dlist_get_type_2() {
+    DList *list = dlist_init();
+    char *s = "hello";
+    int i = 5;
+    float f = 3.14;
+    dlist_append(list, s, STRING);
+    dlist_append(list, &i, INT);
+    dlist_append(list, &f, FLOAT);
+    if (dlist_get_type(list, 1) != INT) {
+        printf("test_dlist_get_type_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_get_type_2: PASS\n");
+}
+
+
+/* check float type is correctly returned */
+void test_dlist_get_type_3() {
+    DList *list = dlist_init();
+    char *s = "hello";
+    int i = 5;
+    float f = 3.14;
+    dlist_append(list, s, STRING);
+    dlist_append(list, &i, INT);
+    dlist_append(list, &f, FLOAT);
+    if (dlist_get_type(list, 2) != FLOAT) {
+        printf("test_dlist_get_type_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_get_type_3: PASS\n");
+}
+
+
+/* check value of string is correctly returned */
+void test_dlist_get_value_1() {
+    DList *list = dlist_init();
+    char *s = "hello";
+    int i = 5;
+    float f = 3.14;
+    dlist_append(list, s, STRING);
+    dlist_append(list, &i, INT);
+    dlist_append(list, &f, FLOAT);
+    if (strcmp((char *)dlist_get_value(list, 0), s) != 0) {
+        printf("test_dlist_get_value_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_get_value_1: PASS\n");
+}
+
+
+/* check value of integer is correctly returned */
+void test_dlist_get_value_2() {
+    DList *list = dlist_init();
+    char *s = "hello";
+    int i = 5;
+    float f = 3.14;
+    dlist_append(list, s, STRING);
+    dlist_append(list, &i, INT);
+    dlist_append(list, &f, FLOAT);
+    if (*(int *)dlist_get_value(list, 1) != i) {
+        printf("test_dlist_get_value_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_get_value_2: PASS\n");
+}
+
+
+/* check value of float is correctly returned */
+void test_dlist_get_value_3() {
+    DList *list = dlist_init();
+    char *s = "hello";
+    int i = 5;
+    float f = 3.14;
+    dlist_append(list, s, STRING);
+    dlist_append(list, &i, INT);
+    dlist_append(list, &f, FLOAT);
+    if (*(float *)dlist_get_value(list, 2) != f) {
+        printf("test_dlist_get_value_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_get_value_3: PASS\n");
+}
+
+
 /* doubly-linked list is correcty initialized */
 void test_dlist_init_1() {
     DList *list = dlist_init();
@@ -360,6 +468,12 @@ int main(int argc, char *argv[]) {
     test_dlist_append_4();
     test_dlist_append_5();
     test_dlist_append_6();
+    test_dlist_get_type_1();
+    test_dlist_get_type_2();
+    test_dlist_get_type_3();
+    test_dlist_get_value_1();
+    test_dlist_get_value_2();
+    test_dlist_get_value_3();
     test_dlist_init_1();
     test_dlist_insert_1();
     test_dlist_insert_2();

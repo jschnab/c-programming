@@ -21,6 +21,8 @@ typedef struct dlist {
 
 
 void dlist_append(DList *, void *, char);
+char dlist_get_type(DList *, int);
+void *dlist_get_value(DList *, int);
 DList *dlist_init();
 void dlist_insert(DList **, void *, char, int);
 int dlist_length(DList *);

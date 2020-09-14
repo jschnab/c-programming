@@ -27,6 +27,8 @@ typedef struct dlist {
 
 
 void dlist_append(DList *, void *, char);
+char dlist_get_type(DList *, int);
+void *dlist_get_value(DList *, int);
 DList *dlist_init();
 void dlist_insert(DList **, void *, char, int);
 int dlist_length(DList *);
@@ -83,6 +85,34 @@ void dlist_append(DList *list, void *val, char type) {
     list->tail->next = new;
     list->tail = new;
     list->n++;
+}
+
+
+/* get the type of the nth node */
+char dlist_get_type(DList *list, int n) {
+    DListNode *current = list->head;
+    if (n > list->n - 1) {
+        printf("error: index %d is out of bounds\n", n);
+        exit(1);
+    }
+    while (n-- > 0)
+        current = current->next;
+    return current->type;
+}
+
+
+/* get the value of the nth node
+ * this returns a void pointer, you should call dlist_get_type()
+ * to know which type to cast this into, if needed */
+void *dlist_get_value(DList *list, int n) {
+    DListNode *current = list->head;
+    if (n > list->n - 1) {
+        printf("error: index %d is out of bounds\n", n);
+        exit(1);
+    }
+    while (n-- > 0)
+        current = current->next;
+    return current->val;
 }
 
 
