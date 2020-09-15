@@ -219,6 +219,160 @@ void test_dlist_copy_1() {
 }
 
 
+/* delete first node */
+void test_dlist_delete_1() {
+    DList *list = dlist_init();
+    int values[] = {5, 6, 7};
+    int i;
+    DListNode *current;
+    for (i = 0; i < 3; i++)
+        dlist_append(list, &values[i], INT);
+    dlist_delete(list, 0);
+    if (list->n != 2) {
+        printf("test_dlist_delete_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    /* traverse from head to tail */
+    current = list->head;
+    for (i = 1; current != NULL; i++) {
+        if (*(int *)current->val != values[i] || i > 2 || current->type != INT) {
+            printf("test_dlist_delete_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    /* traverse from tail to head */
+    current = list->tail;
+    for (i = 2; current != NULL; i--) {
+        if (*(int *)current->val != values[i] || i < 0 || current->type != INT) {
+            printf("test_dlist_delete_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    printf("test_dlist_delete_1: PASS\n");
+}
+
+
+/* delete middle node */
+void test_dlist_delete_2() {
+    DList *list = dlist_init();
+    int values[] = {5, 6, 7};
+    int i;
+    DListNode *current;
+    dlist_append(list, &values[1], INT);
+    dlist_append(list, &values[0], INT);
+    dlist_append(list, &values[2], INT);
+    dlist_delete(list, 1);
+    if (list->n != 2) {
+        printf("test_dlist_delete_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    /* traverse from head to tail */
+    current = list->head;
+    for (i = 1; current != NULL; i++) {
+        if (*(int *)current->val != values[i] || i > 2 || current->type != INT) {
+            printf("test_dlist_delete_2: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    /* traverse from tail to head */
+    current = list->tail;
+    for (i = 2; current != NULL; i--) {
+        if (*(int *)current->val != values[i] || i < 0 || current->type != INT) {
+            printf("test_dlist_delete_2: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    printf("test_dlist_delete_2: PASS\n");
+}
+
+
+/* delete last node */
+void test_dlist_delete_3() {
+    DList *list = dlist_init();
+    int values[] = {5, 6, 7};
+    int i;
+    DListNode *current;
+    for (i = 0; i < 3; i++)
+        dlist_append(list, &values[i], INT);
+    dlist_delete(list, 2);
+    if (list->n != 2) {
+        printf("test_dlist_delete_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    /* traverse from head to tail */
+    current = list->head;
+    for (i = 0; current != NULL; i++) {
+        if (*(int *)current->val != values[i] || i > 1 || current->type != INT) {
+            printf("test_dlist_delete_3: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    /* traverse from tail to head */
+    current = list->tail;
+    for (i = 1; current != NULL; i--) {
+        if (*(int *)current->val != values[i] || i < 0 || current->type != INT) {
+            printf("test_dlist_delete_3: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    printf("test_dlist_delete_3: PASS\n");
+}
+
+
+/* delete first then last node */
+void test_dlist_delete_4() {
+    DList *list = dlist_init();
+    int values[] = {5, 6, 7, 8};
+    int i;
+    DListNode *current;
+    for (i = 0; i < 4; i++)
+        dlist_append(list, &values[i], INT);
+    dlist_delete(list, 0);
+    dlist_delete(list, 2);
+    if (list->n != 2) {
+        printf("test_dlist_delete_4: FAILED\n");
+        n_fail++;
+        return;
+    }
+    /* traverse from head to tail */
+    current = list->head;
+    for (i = 1; current != NULL; i++) {
+        if (*(int *)current->val != values[i] || i > 2 || current->type != INT) {
+            printf("test_dlist_delete_4: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    /* traverse from tail to head */
+    current = list->tail;
+    for (i = 2; current != NULL; i--) {
+        if (*(int *)current->val != values[i] || i < 1 || current->type != INT) {
+            printf("test_dlist_delete_4: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    printf("test_dlist_delete_4: PASS\n");
+}
+
+
 /* check string type is correctly returned */
 void test_dlist_get_type_1() {
     DList *list = dlist_init();
@@ -517,6 +671,10 @@ int main(int argc, char *argv[]) {
     test_dlist_append_5();
     test_dlist_append_6();
     test_dlist_copy_1();
+    test_dlist_delete_1();
+    test_dlist_delete_2();
+    test_dlist_delete_3();
+    test_dlist_delete_4();
     test_dlist_get_type_1();
     test_dlist_get_type_2();
     test_dlist_get_type_3();

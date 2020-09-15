@@ -23,6 +23,7 @@ typedef struct dlist {
 void dlist_append(DList *, void *, char);
 DList *dlist_copy(DList *);
 DListNode *dlist_copy_node(DListNode *);
+void dlist_delete(DList *, int);
 char dlist_get_type(DList *, int);
 void *dlist_get_value(DList *, int);
 DList *dlist_init();

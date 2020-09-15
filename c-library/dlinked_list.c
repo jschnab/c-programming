@@ -29,6 +29,7 @@ typedef struct dlist {
 void dlist_append(DList *, void *, char);
 DList *dlist_copy(DList *);
 DListNode *dlist_copy_node(DListNode *);
+void dlist_delete(DList *, int);
 char dlist_get_type(DList *, int);
 void *dlist_get_value(DList *, int);
 DList *dlist_init();
@@ -121,6 +122,36 @@ DList *dlist_copy(DList *list) {
     }
 
     return new;
+}
+
+
+/* delete nth node of list
+ * raise an error if trying to delete node past the last node */
+void dlist_delete(DList *list, int n) {
+    if (n >= list->n) {
+        printf("error: trying to delete past last node\n");
+        exit(1);
+    }
+
+    /* position 'current' pointer on the node to delete */
+    DListNode *current = list->head;
+    while (n-- > 0)
+        current = current->next;
+
+    if (current->prev != NULL)
+        current->prev->next = current->next;
+    /* if we delete the first node, update 'head' pointer */
+    else
+        list->head = current->next;
+
+    if (current->next != NULL)
+        current->next->prev = current->prev;
+    /* if we delete the last node, update 'tail' pointer */
+    else
+        list->tail = current->prev;
+
+    free(current);
+    list->n--;
 }
 
 
