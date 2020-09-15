@@ -662,6 +662,44 @@ void test_dlist_print_3() {
 }
 
 
+/* slice list of integers */
+void test_dlist_slice_1() {
+    DList *list = dlist_init();
+    int values[] = {5, 6, 7, 8};
+    int i;
+    DListNode *current;
+    for (i = 0; i < 4; i++)
+        dlist_append(list, &values[i], INT);
+    DList *sliced = dlist_slice(list, 1, 3);
+    if (sliced->n != 2) {
+        printf("test_dlist_slice_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    /* traverse from head to tail */
+    current = sliced->head;
+    for (i = 1; current != NULL; i++) {
+        if (*(int *)current->val != values[i] || i > 2 || current->type != INT) {
+            printf("test_dlist_slice_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    /* traverse from tail to head */
+    current = sliced->tail;
+    for (i = 2; current != NULL; i--) {
+        if (*(int *)current->val != values[i] || i < 1 || current->type != INT) {
+            printf("test_dlist_slice_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    printf("test_dlist_slice_1: PASS\n");
+}
+
+
 int main(int argc, char *argv[]) {
     printf("Running tests on doubly-linked list functions...\n\n");
     test_dlist_append_1();
@@ -686,6 +724,7 @@ int main(int argc, char *argv[]) {
     test_dlist_insert_2();
     test_dlist_insert_3();
     test_dlist_length_1();
+    test_dlist_slice_1();
     test_dlist_print_1();
     test_dlist_print_2();
     test_dlist_print_3();

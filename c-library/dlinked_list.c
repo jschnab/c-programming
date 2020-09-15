@@ -29,6 +29,7 @@ typedef struct dlist {
 void dlist_append(DList *, void *, char);
 DList *dlist_copy(DList *);
 DListNode *dlist_copy_node(DListNode *);
+DListNode *dlist_create_node(void *, char);
 void dlist_delete(DList *, int);
 char dlist_get_type(DList *, int);
 void *dlist_get_value(DList *, int);
@@ -36,44 +37,13 @@ DList *dlist_init();
 void dlist_insert(DList **, void *, char, int);
 int dlist_length(DList *);
 void dlist_print(DList *);
+DList *dlist_slice(DList *, int, int);
 
 
 /* append a node at the end of the linked list */
 /* if the list is empty, set the new node as head and tail */
 void dlist_append(DList *list, void *val, char type) {
-    DListNode *new = (DListNode *) malloc(sizeof(DListNode));
-    if (new == NULL) {
-        printf("error: malloc failed when appending node to list\n");
-        exit(1);
-    }
-
-    switch (type) {
-        case INT:
-            new->val = (int *) malloc(sizeof(int));
-            if (new->val == NULL) {
-                printf("error: malloc failed when appending node to list\n");
-                exit(1);
-            }
-            memcpy(new->val, val, sizeof(int));
-            break;
-        case FLOAT:
-            new->val = (float *) malloc(sizeof(float));
-            if (new->val == NULL) {
-                printf("error: malloc failed when appending node to list\n");
-                exit(1);
-            }
-            memcpy(new->val, val, sizeof(int));
-            break;
-        case STRING:
-            new->val = (char *) malloc(strlen(val));
-            if (new->val == NULL) {
-                printf("error: malloc failed when appending node to list\n");
-                exit(1);
-            }
-            memcpy(new->val, val, strlen(val));
-            break;
-    }
-    new->type = type;
+    DListNode *new = dlist_create_node(val, type);
 
     /* if the list is empty */
     if (list->tail == NULL) {
@@ -95,31 +65,61 @@ void dlist_append(DList *list, void *val, char type) {
 DList *dlist_copy(DList *list) {
     if (list == NULL)
         return NULL;
-
     DList *new = dlist_init();
     DListNode *current = list->head;
-    DListNode *current_new;
-    DListNode *previous = NULL;
-
-    /* add first node to new list */
-    if (current != NULL) {
-        current_new = dlist_copy_node(current);
-        current_new->type = current->type;
-        current_new->prev = previous;
-        previous = current_new;
-        current = current->next;
-        new->n = 1;
-    }
-
-    /* add subsequent nodes */
     while (current != NULL) {
-        current_new = dlist_copy_node(current);
-        current_new->type = current->type;
-        current_new->prev = previous;
-        previous = current_new;
+        dlist_append(new, current->val, current->type);
         current = current->next;
-        new->n++;
     }
+    return new;
+}
+
+
+/* copy the value and type of a doubly-linked node
+ * this does not copy the 'next' and 'prev' pointers */
+DListNode *dlist_copy_node(DListNode *node) {
+    DListNode *new = dlist_create_node(node->val, node->type);
+    return new;
+}
+
+
+/* return a node with the value stored in a void pointer */
+DListNode *dlist_create_node(void *value, char type) {
+    DListNode *new = (DListNode *) malloc(sizeof(DListNode));
+    if (new == NULL) {
+        printf("error: malloc failed when creating node\n");
+        exit(1);
+    }
+
+    switch (type) {
+        case INT:
+            new->val = (int *) malloc(sizeof(int));
+            if (new->val == NULL) {
+                printf("error: malloc failed when creating node\n");
+                exit(1);
+            }
+            memcpy(new->val, value, sizeof(int));
+            break;
+        case FLOAT:
+            new->val = (float *) malloc(sizeof(float));
+            if (new->val == NULL) {
+                printf("error: malloc failed when creating node\n");
+                exit(1);
+            }
+            memcpy(new->val, value, sizeof(int));
+            break;
+        case STRING:
+            new->val = (char *) malloc(strlen(value));
+            if (new->val == NULL) {
+                printf("error: malloc failed when creating node\n");
+                exit(1);
+            }
+            memcpy(new->val, value, strlen(value));
+            break;
+    }
+    new->type = type;
+    new->next = NULL;
+    new->prev = NULL;
 
     return new;
 }
@@ -187,7 +187,7 @@ void *dlist_get_value(DList *list, int n) {
 DList *dlist_init() {
     DList *list = (DList *) malloc(sizeof(DList));
     if (list == NULL) {
-        printf("error: memory not allocated to initialize list\n");
+        printf("error: malloc when initializing list\n");
         exit(1);
     }
     list->head = NULL;
@@ -203,41 +203,7 @@ DList *dlist_init() {
  * and the position where to insert the node in the list
  * Note: if position > length of list, append node at the end */
 void dlist_insert(DList **list, void *value, char type, int position) {
-    DListNode *new = (DListNode *) malloc(sizeof(DListNode));
-    if (new == NULL) {
-        printf("error: malloc failed when insert node in list\n");
-        exit(1);
-    }
-    new->type = type;
-    new->next = NULL;
-    new->prev = NULL;
-
-    switch (type) {
-        case INT:
-            new->val = (int *) malloc(sizeof(int));
-            if (new->val == NULL) {
-                printf("error: malloc failed when inserting node to list\n");
-                exit(1);
-            }
-            memcpy(new->val, value, sizeof(int));
-            break;
-        case FLOAT:
-            new->val = (float *) malloc(sizeof(float));
-            if (new->val == NULL) {
-                printf("error: malloc failed when inserting node to list\n");
-                exit(1);
-            }
-            memcpy(new->val, value, sizeof(int));
-            break;
-        case STRING:
-            new->val = (char *) malloc(strlen(value));
-            if (new->val == NULL) {
-                printf("error: malloc failed when inserting node to list\n");
-                exit(1);
-            }
-            memcpy(new->val, value, strlen(value));
-            break;
-    }
+    DListNode *new = dlist_create_node(value, type);
 
     /* we insert at the beginning of the list */
     if (position == 0) {
@@ -295,43 +261,22 @@ void dlist_print(DList *list) {
 }
 
 
-/* copy the value and type of a doubly-linked node
- * this does not copy the 'next' and 'prev' pointers */
-DListNode *dlist_copy_node(DListNode *node) {
-    DListNode *new = (DListNode *) malloc(sizeof(DListNode));
-    if (new == NULL) {
-        printf("error: malloc failed when copying node value\n");
+/* slice a list based on start (inclusive) and end (exclusive) integers
+ * this returns a deep copy of the list */
+DList *dlist_slice(DList *list, int start, int end) {
+    if (start > end) {
+        printf("error: need start > end when slicing list\n");
         exit(1);
     }
-    new->type = node->type;
-    switch (node->type) {
-        case INT:
-            new->val = (int *) malloc(sizeof(int));
-            if (new->val == NULL) {
-                printf("error: malloc failed when copying node value\n");
-                exit(1);
-            }
-            memcpy(new->val, node->val, sizeof(int));
-            break;
-        case FLOAT:
-            new->val = (float *) malloc(sizeof(float));
-            if (new->val == NULL) {
-                printf("error: malloc failed when copying node value\n");
-                exit(1);
-            }
-            memcpy(new->val, node->val, sizeof(float));
-            break;
-        case STRING:
-            new->val = (char *) malloc(strlen(node->val));
-            if (new->val == NULL) {
-                printf("error: malloc failed when copying node value\n");
-                exit(1);
-            }
-            memcpy(new->val, node->val, strlen(node->val));
-            break;
-        default:
-            printf("error: node type not supported\n");
-            exit(1);
-    }
+
+    DList *new = dlist_copy(list);
+    /* remove heading nodes */
+    while (start-- > 0)
+        dlist_delete(new, 0);
+
+    /* remove trailing nodes */
+    while (end++ < list->n)
+        dlist_delete(new, new->n-1);
+
     return new;
 }
