@@ -27,6 +27,8 @@ typedef struct dlist {
 
 
 void dlist_append(DList *, void *, char);
+DList *dlist_copy(DList *);
+DListNode *dlist_copy_node(DListNode *);
 char dlist_get_type(DList *, int);
 void *dlist_get_value(DList *, int);
 DList *dlist_init();
@@ -85,6 +87,40 @@ void dlist_append(DList *list, void *val, char type) {
     list->tail->next = new;
     list->tail = new;
     list->n++;
+}
+
+
+/* copy a list */
+DList *dlist_copy(DList *list) {
+    if (list == NULL)
+        return NULL;
+
+    DList *new = dlist_init();
+    DListNode *current = list->head;
+    DListNode *current_new;
+    DListNode *previous = NULL;
+
+    /* add first node to new list */
+    if (current != NULL) {
+        current_new = dlist_copy_node(current);
+        current_new->type = current->type;
+        current_new->prev = previous;
+        previous = current_new;
+        current = current->next;
+        new->n = 1;
+    }
+
+    /* add subsequent nodes */
+    while (current != NULL) {
+        current_new = dlist_copy_node(current);
+        current_new->type = current->type;
+        current_new->prev = previous;
+        previous = current_new;
+        current = current->next;
+        new->n++;
+    }
+
+    return new;
 }
 
 
@@ -225,4 +261,46 @@ void dlist_print(DList *list) {
         }
         current = current->next;
     }
+}
+
+
+/* copy the value and type of a doubly-linked node
+ * this does not copy the 'next' and 'prev' pointers */
+DListNode *dlist_copy_node(DListNode *node) {
+    DListNode *new = (DListNode *) malloc(sizeof(DListNode));
+    if (new == NULL) {
+        printf("error: malloc failed when copying node value\n");
+        exit(1);
+    }
+    new->type = node->type;
+    switch (node->type) {
+        case INT:
+            new->val = (int *) malloc(sizeof(int));
+            if (new->val == NULL) {
+                printf("error: malloc failed when copying node value\n");
+                exit(1);
+            }
+            memcpy(new->val, node->val, sizeof(int));
+            break;
+        case FLOAT:
+            new->val = (float *) malloc(sizeof(float));
+            if (new->val == NULL) {
+                printf("error: malloc failed when copying node value\n");
+                exit(1);
+            }
+            memcpy(new->val, node->val, sizeof(float));
+            break;
+        case STRING:
+            new->val = (char *) malloc(strlen(node->val));
+            if (new->val == NULL) {
+                printf("error: malloc failed when copying node value\n");
+                exit(1);
+            }
+            memcpy(new->val, node->val, strlen(node->val));
+            break;
+        default:
+            printf("error: node type not supported\n");
+            exit(1);
+    }
+    return new;
 }

@@ -171,6 +171,54 @@ void test_dlist_append_6() {
 }
 
 
+/* check list is correctly copied */
+void test_dlist_copy_1() {
+    DList *list = dlist_init();
+    int values[] = {4, 5, 6};
+    int i;
+    for (i = 0; i < 3; i++)
+        dlist_append(list, &values[i], INT);
+    DList *copy = dlist_copy(list);
+
+    if (copy->n != 3) {
+        printf("test_dlist_copy_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+
+    /* traverse list from head to tail */
+    DListNode *current = copy->head;
+    for (i = 0; current != NULL; i++) {
+        if (
+            *(int *)current->val != values[i] ||
+            current->type != INT ||
+            i > 2
+        ) {
+            printf("test_dlist_copy_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+
+    /* traverse list from tail to head */
+    current = copy->tail;
+    for (i = 2; current != NULL; i--) {
+        if (
+            *(int *)current->val != values[i] ||
+            current->type != INT ||
+            i < 0
+        ) {
+            printf("test_dlist_copy_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    printf("test_dlist_copy_1: PASS\n");
+}
+
+
 /* check string type is correctly returned */
 void test_dlist_get_type_1() {
     DList *list = dlist_init();
@@ -468,6 +516,7 @@ int main(int argc, char *argv[]) {
     test_dlist_append_4();
     test_dlist_append_5();
     test_dlist_append_6();
+    test_dlist_copy_1();
     test_dlist_get_type_1();
     test_dlist_get_type_2();
     test_dlist_get_type_3();
