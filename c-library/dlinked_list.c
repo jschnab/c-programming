@@ -32,6 +32,7 @@ DListNode *dlist_copy_node(DListNode *);
 DListNode *dlist_create_node(void *, char);
 void dlist_delete(DList *, int);
 char dlist_equal(DList *, DList *);
+DList *dlist_from_array(void *, char, int);
 char dlist_get_type(DList *, int);
 void *dlist_get_value(DList *, int);
 DList *dlist_init();
@@ -191,6 +192,28 @@ char dlist_equal(DList *a, DList *b) {
         return 0;
 
     return 1;
+}
+
+
+/* build list from an array */
+DList *dlist_from_array(void *array, char type, int length) {
+    DList *list = dlist_init();
+    for (int i = 0; i < length; i++)
+        switch (type) {
+            case INT:
+                dlist_append(list, &((int *)array)[i], INT);
+                break;
+            case FLOAT:
+                dlist_append(list, &((float *)array)[i], FLOAT);
+                break;
+            case STRING:
+                dlist_append(list, ((char **)array)[i], STRING);
+                break;
+            default:
+                printf("error: data type not supported\n");
+                exit(1);
+        }
+    return list;
 }
 
 

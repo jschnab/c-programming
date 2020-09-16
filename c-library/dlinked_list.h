@@ -26,6 +26,7 @@ DListNode *dlist_copy_node(DListNode *);
 DListNode *dlist_create_node(void *, char);
 void dlist_delete(DList *, int);
 char dlist_equal(DList *, DList *);
+DList *dlist_from_array(void *, char, int);
 char dlist_get_type(DList *, int);
 void *dlist_get_value(DList *, int);
 DList *dlist_init();

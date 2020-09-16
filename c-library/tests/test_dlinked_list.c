@@ -460,6 +460,99 @@ void test_dlist_equal_5() {
 }
 
 
+/* convert integer array to list */
+void test_dlist_from_array_1() {
+    int array[] = {3, 4, 5, 6};
+    DList *list = dlist_from_array(array, INT, 4);
+    DListNode *head = list->head;
+    DListNode *tail = list->tail;
+    if (list->n != 4 || head == NULL || tail == NULL) {
+        printf("test_dlist_from_array_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    for (int i = 0; head != NULL; i++) {
+        if (*(int *)head->val != array[i] || head->type != INT || i > 3) {
+            printf("test_dlist_from_array_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+        head = head->next;
+    }
+    for (int i = 3; tail != NULL; i--) {
+        if (*(int *)tail->val != array[i] || tail->type != INT || i < 0) {
+            printf("test_dlist_from_array_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+        tail = tail->prev;
+    }
+    printf("test_dlist_from_array_1: PASS\n");
+}
+
+
+/* convert float array to list */
+void test_dlist_from_array_2() {
+    float array[] = {9.0, 8.0, 7.0, 6.0};
+    DList *list = dlist_from_array(array, FLOAT, 4);
+    DListNode *head = list->head;
+    DListNode *tail = list->tail;
+    if (list->n != 4 || head == NULL || tail == NULL) {
+        printf("test_dlist_from_array_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    for (int i = 0; head != NULL; i++) {
+        if (*(float *)head->val != array[i] || head->type != FLOAT || i > 3) {
+            printf("test_dlist_from_array_2: FAILED\n");
+            n_fail++;
+            return;
+        }
+        head = head->next;
+    }
+    for (int i = 3; tail != NULL; i--) {
+        if (*(float *)tail->val != array[i] || tail->type != FLOAT || i < 0) {
+            printf("test_dlist_from_array_2: FAILED\n");
+            n_fail++;
+            return;
+        }
+        tail = tail->prev;
+    }
+    printf("test_dlist_from_array_2: PASS\n");
+}
+
+
+/* convert string array to list */
+void test_dlist_from_array_3() {
+    char *array[] = {"hello", "brave", "new", "world"};
+    DList *list = dlist_from_array(array, STRING, 4);
+    DListNode *head = list->head;
+    DListNode *tail = list->tail;
+    if (list->n != 4 || head == NULL || tail == NULL) {
+        printf("test_dlist_from_array_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    for (int i = 0; head != NULL; i++) {
+        if (strcmp((char *)head->val, array[i]) != 0 || head->type != STRING || i > 3) {
+            printf("test_dlist_from_array_3: FAILED\n");
+            n_fail++;
+            return;
+        }
+        head = head->next;
+    }
+    for (int i = 3; tail != NULL; i--) {
+        if (strcmp((char *)tail->val, array[i]) != 0 || tail->type != STRING || i < 0) {
+            printf("test_dlist_from_array_3: FAILED\n");
+            n_fail++;
+            return;
+        }
+        tail = tail->prev;
+    }
+    printf("test_dlist_from_array_3: PASS\n");
+}
+
+
 /* check string type is correctly returned */
 void test_dlist_get_type_1() {
     DList *list = dlist_init();
@@ -917,6 +1010,9 @@ int main(int argc, char *argv[]) {
     test_dlist_equal_3();
     test_dlist_equal_4();
     test_dlist_equal_5();
+    test_dlist_from_array_1();
+    test_dlist_from_array_2();
+    test_dlist_from_array_3();
     test_dlist_get_type_1();
     test_dlist_get_type_2();
     test_dlist_get_type_3();
