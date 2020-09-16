@@ -27,7 +27,7 @@ void list_insert_front(ListNode **, void *, char);
 int list_length(ListNode *);
 void list_print(ListNode *);
 void list_reverse(ListNode **);
-void list_to_array(ListNode *, void *, char type);
+void list_to_array(ListNode *, void *, char);
 void list_to_strarray(ListNode *head, char *array[]);
 
 

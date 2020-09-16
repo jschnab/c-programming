@@ -373,6 +373,93 @@ void test_dlist_delete_4() {
 }
 
 
+/* check two empty lists are considered equal */
+void test_dlist_equal_1() {
+    DList *a = dlist_init();
+    DList *b = dlist_init();
+    if (dlist_equal(a, b) != 1) {
+        printf("test_dlist_equal_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_equal_1: PASS\n");
+}
+
+
+/* check lists of integers are considered equal */
+void test_dlist_equal_2() {
+    DList *a = dlist_init();
+    DList *b = dlist_init();
+    int values[] = {5, 6, 7};
+    for (int i = 0; i < 3; i++) {
+        dlist_append(a, &values[i], INT);
+        dlist_append(b, &values[i], INT);
+    }
+    if (dlist_equal(a, b) != 1) {
+        printf("test_dlist_equal_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_equal_2: PASS\n");
+}
+
+
+/* check lists of floats are considered equal */
+void test_dlist_equal_3() {
+    DList *a = dlist_init();
+    DList *b = dlist_init();
+    float values[] = {5.0, 6.0, 7.0};
+    for (int i = 0; i < 3; i++) {
+        dlist_append(a, &values[i], FLOAT);
+        dlist_append(b, &values[i], FLOAT);
+    }
+    if (dlist_equal(a, b) != 1) {
+        printf("test_dlist_equal_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_equal_3: PASS\n");
+}
+
+
+/* check lists of strings are considered equal */
+void test_dlist_equal_4() {
+    DList *a = dlist_init();
+    DList *b = dlist_init();
+    char *values[] = {"brave", "new", "world"};
+    for (int i = 0; i < 3; i++) {
+        dlist_append(a, &values[i], STRING);
+        dlist_append(b, &values[i], STRING);
+    }
+    if (dlist_equal(a, b) != 1) {
+        printf("test_dlist_equal_4: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_equal_4: PASS\n");
+}
+
+
+/* check lists of integers with same values but different lengths
+ * are considered unequal */
+void test_dlist_equal_5() {
+    DList *a = dlist_init();
+    DList *b = dlist_init();
+    int values[] = {5, 6, 7};
+    dlist_append(a, &values[0], INT);
+    dlist_append(a, &values[1], INT);
+    dlist_append(b, &values[0], INT);
+    dlist_append(b, &values[1], INT);
+    dlist_append(b, &values[2], INT);
+    if (dlist_equal(a, b) != 0) {
+        printf("test_dlist_equal_5: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_equal_5: PASS\n");
+}
+
+
 /* check string type is correctly returned */
 void test_dlist_get_type_1() {
     DList *list = dlist_init();
@@ -662,7 +749,7 @@ void test_dlist_print_3() {
 }
 
 
-/* slice list of integers */
+/* slice list of integers on both ends*/
 void test_dlist_slice_1() {
     DList *list = dlist_init();
     int values[] = {5, 6, 7, 8};
@@ -700,6 +787,118 @@ void test_dlist_slice_1() {
 }
 
 
+/* slice list of integers into empty list*/
+void test_dlist_slice_2() {
+    DList *list = dlist_init();
+    int values[] = {5, 6, 7, 8};
+    for (int i = 0; i < 4; i++)
+        dlist_append(list, &values[i], INT);
+    DList *sliced = dlist_slice(list, 1, 1);
+    if (sliced->n != 0 || sliced->head != NULL || sliced->tail != NULL) {
+        printf("test_dlist_slice_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_slice_2: PASS\n");
+}
+
+
+/* slice list of integers into the same list*/
+void test_dlist_slice_3() {
+    DList *list = dlist_init();
+    int values[] = {5, 6, 7, 8};
+    int i;
+    DListNode *current;
+    for (i = 0; i < 4; i++)
+        dlist_append(list, &values[i], INT);
+    DList *sliced = dlist_slice(list, 0, 4);
+    if (sliced->n != 4) {
+        printf("test_dlist_slice_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    /* traverse from head to tail */
+    current = sliced->head;
+    for (i = 0; current != NULL; i++) {
+        if (*(int *)current->val != values[i] || i > 3 || current->type != INT) {
+            printf("test_dlist_slice_3: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    /* traverse from tail to head */
+    current = sliced->tail;
+    for (i = 3; current != NULL; i--) {
+        if (*(int *)current->val != values[i] || i < 0 || current->type != INT) {
+            printf("test_dlist_slice_3: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    printf("test_dlist_slice_3: PASS\n");
+}
+
+
+/* convert list into array of integers */
+void test_dlist_to_array_1() {
+    DList *list = dlist_init();
+    int values[] = {3, 4, 5};
+    int i;
+    for (i = 0; i < 3; i++)
+        dlist_append(list, &values[i], INT);
+    int result[3];
+    dlist_to_array(list, result, INT);
+    for (i = 0; i < 3; i++)
+        if (result[i] != values[i]) {
+            printf("test_dlist_to_array_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+    printf("test_dlist_to_array_1: PASS\n");
+}
+
+
+/* convert list into array of integers */
+void test_dlist_to_array_2() {
+    DList *list = dlist_init();
+    float values[] = {3.0, 4.0, 5.0};
+    int i;
+    for (i = 0; i < 3; i++)
+        dlist_append(list, &values[i], FLOAT);
+    int result[3];
+    dlist_to_array(list, result, FLOAT);
+    for (i = 0; i < 3; i++)
+        if (result[i] != values[i]) {
+            printf("test_dlist_to_array_2: FAILED\n");
+            n_fail++;
+            return;
+        }
+    printf("test_dlist_to_array_2: PASS\n");
+}
+
+
+/* convert list containing 3 string nodes to array */
+void test_dlist_to_strarray_1() {
+    DList *list = dlist_init();
+    char *values[] = {"brave", "new", "world"};
+    int i;
+    for (i = 0; i < 3; i++)
+        dlist_append(list, values[i], STRING);
+    char *array[3];
+    dlist_to_strarray(list, array);
+    for (i = 0; i < 3; i++) {
+        if (strcmp(array[i], values[i]) != 0) {
+            printf("test_dlist_to_strarray_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+    }
+    printf("test_dlist_to_array_1: PASS\n");
+}
+
+
 int main(int argc, char *argv[]) {
     printf("Running tests on doubly-linked list functions...\n\n");
     test_dlist_append_1();
@@ -713,6 +912,11 @@ int main(int argc, char *argv[]) {
     test_dlist_delete_2();
     test_dlist_delete_3();
     test_dlist_delete_4();
+    test_dlist_equal_1();
+    test_dlist_equal_2();
+    test_dlist_equal_3();
+    test_dlist_equal_4();
+    test_dlist_equal_5();
     test_dlist_get_type_1();
     test_dlist_get_type_2();
     test_dlist_get_type_3();
@@ -725,6 +929,11 @@ int main(int argc, char *argv[]) {
     test_dlist_insert_3();
     test_dlist_length_1();
     test_dlist_slice_1();
+    test_dlist_slice_2();
+    test_dlist_slice_3();
+    test_dlist_to_array_1();
+    test_dlist_to_array_2();
+    test_dlist_to_strarray_1();
     test_dlist_print_1();
     test_dlist_print_2();
     test_dlist_print_3();

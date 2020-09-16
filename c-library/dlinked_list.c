@@ -31,6 +31,7 @@ DList *dlist_copy(DList *);
 DListNode *dlist_copy_node(DListNode *);
 DListNode *dlist_create_node(void *, char);
 void dlist_delete(DList *, int);
+char dlist_equal(DList *, DList *);
 char dlist_get_type(DList *, int);
 void *dlist_get_value(DList *, int);
 DList *dlist_init();
@@ -38,6 +39,8 @@ void dlist_insert(DList **, void *, char, int);
 int dlist_length(DList *);
 void dlist_print(DList *);
 DList *dlist_slice(DList *, int, int);
+void dlist_to_array(DList *, void *, char);
+void dlist_to_strarray(DList *, char *array[]);
 
 
 /* append a node at the end of the linked list */
@@ -155,6 +158,42 @@ void dlist_delete(DList *list, int n) {
 }
 
 
+/* determine if two lists are equal */
+char dlist_equal(DList *a, DList *b) {
+    if (dlist_length(a) != dlist_length(b))
+        return 0;
+
+    DListNode *cur_a = a->head;
+    DListNode *cur_b = b->head;
+
+    /* traverse list from head to tail */
+    while (cur_a != NULL) {
+        if (cur_a->type != cur_b->type)
+            return 0;
+
+        switch (cur_a->type) {
+            case INT:
+                if (*(int *)cur_a->val != *(int *)cur_b->val)
+                    return 0;
+            case FLOAT:
+                if (*(float *)cur_a->val != *(float *)cur_b->val)
+                    return 0;
+            case STRING:
+                if (strcmp((char *)cur_a->val, (char *)cur_b->val) != 0)
+                    return 0;
+        }
+        cur_a = cur_a->next;
+        cur_b = cur_b->next;
+    }
+
+    /* check tail pointers are correct */
+    if (dlist_length(a) > 0 && a->tail->type != b->tail->type)
+        return 0;
+
+    return 1;
+}
+
+
 /* get the type of the nth node */
 char dlist_get_type(DList *list, int n) {
     DListNode *current = list->head;
@@ -242,22 +281,24 @@ int dlist_length(DList *list) {
 /* print the linked list */
 void dlist_print(DList *list) {
     DListNode *current = list->head;
+    printf("[ ");
     while (current != NULL) {
         switch (current->type) {
             case INT:
-                printf((current->next != NULL) ? "%d <-> " : "%d\n", *(int *)current->val);
+                printf((current->next != NULL) ? "%d <-> " : "%d", *(int *)current->val);
                 break;
             case FLOAT:
-                printf((current->next != NULL) ? "%.3f <-> " : "%.3f\n", *(float *)current->val);
+                printf((current->next != NULL) ? "%.3f <-> " : "%.3f", *(float *)current->val);
                 break;
             case STRING:
-                printf((current->next != NULL) ? "%s <-> " : "%s\n", (char *)current->val);
+                printf((current->next != NULL) ? "%s <-> " : "%s", (char *)current->val);
                 break;
             default:
-                printf((current->next != NULL) ? "? <-> " : "?\n");
+                printf((current->next != NULL) ? "? <-> " : "?");
         }
         current = current->next;
     }
+    printf(" ]\n");
 }
 
 
@@ -265,7 +306,7 @@ void dlist_print(DList *list) {
  * this returns a deep copy of the list */
 DList *dlist_slice(DList *list, int start, int end) {
     if (start > end) {
-        printf("error: need start > end when slicing list\n");
+        printf("error: need start < end when slicing list\n");
         exit(1);
     }
 
@@ -279,4 +320,31 @@ DList *dlist_slice(DList *list, int start, int end) {
         dlist_delete(new, new->n-1);
 
     return new;
+}
+
+/* copy the values of the list into the provided array
+ * the array length must be greater than or equal to the list length */
+void dlist_to_array(DList *list, void *array, char type) {
+    DListNode *current = list->head;
+    for (int i = 0; current != NULL; i++, current = current->next) {
+        switch (type) {
+            case INT:
+                ((int *)array)[i] = *(int *)current->val;
+                break;
+            case FLOAT:
+                ((int *)array)[i] = *(float *)current->val;
+                break;
+        }
+    }
+}
+
+
+/* copy the strings stored in a list into the provided array
+ * the array length must be greater than or equal to the list length */
+void dlist_to_strarray(DList *list, char *array[]) {
+    DListNode *current = list->head;
+    for (int i = 0; current != NULL; i++, current = current->next) {
+        array[i] = (char *) malloc(strlen((char *)current->val));
+        memcpy(array[i], current->val, strlen((char *)current->val));
+    }
 }
