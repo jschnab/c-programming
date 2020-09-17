@@ -40,6 +40,8 @@ void dlist_insert(DList **, void *, char, int);
 int dlist_length(DList *);
 void dlist_print(DList *);
 DList *dlist_slice(DList *, int, int);
+void dlist_swap_nodes(DList *, int, int);
+void dlist_swap_node_ptr(DListNode **, DListNode **);
 void dlist_to_array(DList *, void *, char);
 void dlist_to_strarray(DList *, char *array[]);
 
@@ -344,6 +346,65 @@ DList *dlist_slice(DList *list, int start, int end) {
 
     return new;
 }
+
+
+/* swap two nodes at indices i and j of the list */
+void dlist_swap_nodes(DList *list, int i, int j) {
+    if (i == j)
+        return;
+    if (i > j) {
+        int tmp = i;
+        i = j;
+        j = tmp;
+    }
+
+    /* position m and n pointers on the node to swap */
+    char m_is_head = i == 0 ? 1 : 0;
+    char n_is_tail = j == dlist_length(list) - 1 ? 1 : 0;
+    DListNode *m = list->head;
+    while (i-- > 0)
+        m = m->next;
+    DListNode *n = list->head;
+    while (j-- > 0)
+        n = n->next;
+
+    DListNode **ptr;
+
+    if (!m_is_head) {
+        dlist_swap_node_ptr(&m->prev->next, &n->prev->next);
+    }
+    else {
+        ptr = &n->prev->next;
+        *ptr = m;
+        /* we are swapping the first node: need to reassign 'head' pointer */
+        DListNode **head_ptr = &list->head;
+        *head_ptr = n;
+    }
+
+    dlist_swap_node_ptr(&m->prev, &n->prev);
+
+    if (!n_is_tail) {
+        dlist_swap_node_ptr(&m->next->prev, &n->next->prev);
+    }
+    else {
+        ptr = &m->next->prev;
+        *ptr = n;
+        /* we are swapping the last node: need to reassign 'tail' pointer */
+        DListNode **tail_ptr = &list->tail;
+        *tail_ptr = m;
+    }
+
+    dlist_swap_node_ptr(&m->next, &n->next);
+}
+
+
+/* swap node pointers */
+void dlist_swap_node_ptr(DListNode **a, DListNode **b) {
+    DListNode *tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
 
 /* copy the values of the list into the provided array
  * the array length must be greater than or equal to the list length */

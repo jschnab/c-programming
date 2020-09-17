@@ -934,6 +934,148 @@ void test_dlist_slice_3() {
 }
 
 
+/* swap two non-consecutive middle nodes in an integer list */
+void test_dlist_swap_nodes_1() {
+    DList *list = dlist_init();
+    int values[] = {1, 2, 3, 4, 5};
+    int expect[] = {1, 4, 3, 2, 5};
+    int i;
+    for (i = 0; i < 5; i++)
+        dlist_append(list, &values[i], INT);
+    dlist_swap_nodes(list, 1, 3);
+    DListNode *current;
+
+    /* traverse from head to tail */
+    current = list->head;
+    for (i = 0; current != NULL; i++) {
+        if (*(int *)current->val != expect[i] || i > 4) {
+            printf("test_dlist_swap_nodes_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    if (i != 5) {
+        printf("test_dlist_swap_nodes_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+
+    /* traverse from tail to head */
+    current = list->tail;
+    for (i = 4; current != NULL; i--) {
+        if (*(int *)current->val != expect[i] || i < 0) {
+            printf("test_dlist_swap_nodes_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    if (i != -1) {
+        printf("test_dlist_swap_nodes_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+
+    printf("test_dlist_swap_nodes_1: PASS\n");
+}
+
+
+/* swap first and middle nodes of an integer list */
+void test_dlist_swap_nodes_2() {
+    DList *list = dlist_init();
+    int values[] = {1, 2, 3, 4, 5};
+    int expect[] = {3, 2, 1, 4, 5};
+    int i;
+    for (i = 0; i < 5; i++)
+        dlist_append(list, &values[i], INT);
+    dlist_swap_nodes(list, 0, 2);
+
+    DListNode *current;
+
+    /* traverse from head to tail */
+    current = list->head;
+    for (i = 0; current != NULL; i++) {
+        if (*(int *)current->val != expect[i] || i > 4) {
+            printf("test_dlist_swap_nodes_2: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    if (i != 5) {
+        printf("test_dlist_swap_nodes_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+
+    /* traverse from tail to head */
+    current = list->tail;
+    for (i = 4; current != NULL; i--) {
+        if (*(int *)current->val != expect[i] || i < 0) {
+            printf("test_dlist_swap_nodes_2: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    if (i != -1) {
+        printf("test_dlist_swap_nodes_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+
+    printf("test_dlist_swap_nodes_2: PASS\n");
+}
+
+
+/* swap middle and last nodes of an integer list */
+void test_dlist_swap_nodes_3() {
+    DList *list = dlist_init();
+    int values[] = {1, 2, 3, 4, 5};
+    int expect[] = {1, 5, 3, 4, 2};
+    int i;
+    for (i = 0; i < 5; i++)
+        dlist_append(list, &values[i], INT);
+    dlist_swap_nodes(list, 1, 4);
+    DListNode *current;
+
+    /* traverse from head to tail */
+    current = list->head;
+    for (i = 0; current != NULL; i++) {
+        if (*(int *)current->val != expect[i] || i > 4) {
+            printf("test_dlist_swap_nodes_3: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    if (i != 5) {
+        printf("test_dlist_swap_nodes_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+
+    /* traverse from tail to head */
+    current = list->tail;
+    for (i = 4; current != NULL; i--) {
+        if (*(int *)current->val != expect[i] || i < 0) {
+            printf("test_dlist_swap_nodes_3: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    if (i != -1) {
+        printf("test_dlist_swap_nodes_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+
+    printf("test_dlist_swap_nodes_3: PASS\n");
+}
+
+
 /* convert list into array of integers */
 void test_dlist_to_array_1() {
     DList *list = dlist_init();
@@ -1027,6 +1169,9 @@ int main(int argc, char *argv[]) {
     test_dlist_slice_1();
     test_dlist_slice_2();
     test_dlist_slice_3();
+    test_dlist_swap_nodes_1();
+    test_dlist_swap_nodes_2();
+    test_dlist_swap_nodes_3();
     test_dlist_to_array_1();
     test_dlist_to_array_2();
     test_dlist_to_strarray_1();

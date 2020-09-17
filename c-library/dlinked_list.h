@@ -34,5 +34,7 @@ void dlist_insert(DList **, void *, char, int);
 int dlist_length(DList *);
 void dlist_print(DList *);
 DList *dlist_slice(DList *, int, int);
+void dlist_swap_nodes(DList *, int, int);
+void dlist_swap_node_ptr(DListNode **, DListNode **);
 void dlist_to_array(DList *, void *, char);
 void dlist_to_strarray(DList *, char *array[]);
