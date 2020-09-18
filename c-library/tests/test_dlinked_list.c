@@ -1211,7 +1211,7 @@ void test_dlist_swap_nodes_1() {
     int i;
     for (i = 0; i < 5; i++)
         dlist_append(list, &values[i], INT);
-    dlist_swap_nodes(list, dlist_get_node(list, 1), dlist_get_node(list, 3));
+    dlist_swap_nodes(dlist_get_node(list, 1), dlist_get_node(list, 3));
     DListNode *current;
 
     /* traverse from head to tail */
@@ -1258,7 +1258,7 @@ void test_dlist_swap_nodes_2() {
     int i;
     for (i = 0; i < 5; i++)
         dlist_append(list, &values[i], INT);
-    dlist_swap_nodes(list, dlist_get_node(list, 0), dlist_get_node(list, 2));
+    dlist_swap_nodes(dlist_get_node(list, 0), dlist_get_node(list, 2));
 
     DListNode *current;
 
@@ -1306,7 +1306,7 @@ void test_dlist_swap_nodes_3() {
     int i;
     for (i = 0; i < 5; i++)
         dlist_append(list, &values[i], INT);
-    dlist_swap_nodes(list, dlist_get_node(list, 1), dlist_get_node(list, 4));
+    dlist_swap_nodes(dlist_get_node(list, 1), dlist_get_node(list, 4));
     DListNode *current;
 
     /* traverse from head to tail */
