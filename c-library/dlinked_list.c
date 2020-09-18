@@ -27,12 +27,14 @@ typedef struct dlist {
 
 
 void dlist_append(DList *, void *, char);
+int dlist_compare_nodes(DListNode *, DListNode *);
 DList *dlist_copy(DList *);
 DListNode *dlist_copy_node(DListNode *);
 DListNode *dlist_create_node(void *, char);
 void dlist_delete(DList *, int);
 char dlist_equal(DList *, DList *);
 DList *dlist_from_array(void *, char, int);
+DListNode *dlist_get_node(DList *, int);
 char dlist_get_type(DList *, int);
 void *dlist_get_value(DList *, int);
 DList *dlist_init();
@@ -40,7 +42,9 @@ void dlist_insert(DList **, void *, char, int);
 int dlist_length(DList *);
 void dlist_print(DList *);
 DList *dlist_slice(DList *, int, int);
-void dlist_swap_nodes(DList *, int, int);
+void dlist_sort(DList *);
+void dlist_sort_helper(DList *, int, int);
+void dlist_swap_nodes(DList *, DListNode *, DListNode *);
 void dlist_swap_node_ptr(DListNode **, DListNode **);
 void dlist_to_array(DList *, void *, char);
 void dlist_to_strarray(DList *, char *array[]);
@@ -64,6 +68,43 @@ void dlist_append(DList *list, void *val, char type) {
     list->tail->next = new;
     list->tail = new;
     list->n++;
+}
+
+
+/* compare the value of two nodes, the return value is an integer:
+ *  0 if nodes have the same value
+ * -1 if node A is < node B
+ *  1 if node A is > node B
+ *  this function assumes nodes have the same type */
+int dlist_compare_nodes(DListNode *a, DListNode *b) {
+    int i1, i2;
+    float f1, f2;
+    char *s1, *s2;
+    switch (a->type) {
+        case INT:
+            i1 = *(int *)a->val;
+            i2 = *(int *)b->val;
+            if (i1 < i2)
+                return -1;
+            else if (i1 > i2)
+                return 1;
+            return 0;
+        case FLOAT:
+            f1 = *(float *)a->val;
+            f2 = *(float *)b->val;
+            if (f1 < f2)
+                return -1;
+            else if (f1 > f2)
+                return 1;
+            return 0;
+        case STRING:
+            s1 = (char *)a->val;
+            s2 = (char *)b->val;
+            return strcmp(s1, s2);
+        default:
+            printf("error: node type not recognized\n");
+            exit(1);
+    }
 }
 
 
@@ -219,6 +260,25 @@ DList *dlist_from_array(void *array, char type, int length) {
 }
 
 
+/* return a pointer to the nth node of the list */
+DListNode *dlist_get_node(DList *list, int n) {
+    DListNode *current;
+    /* decide if we reach node from head or tail */
+    if (n < dlist_length(list) - 1 - n) {
+        current = list->head;
+        while (n-- > 0)
+            current = current->next;
+        return current;
+    }
+    else {
+        current = list->tail;
+        while (n++ < dlist_length(list) - 1)
+            current = current->prev;
+        return current;
+    }
+}
+
+
 /* get the type of the nth node */
 char dlist_get_type(DList *list, int n) {
     DListNode *current = list->head;
@@ -348,53 +408,95 @@ DList *dlist_slice(DList *list, int start, int end) {
 }
 
 
-/* swap two nodes at indices i and j of the list */
-void dlist_swap_nodes(DList *list, int i, int j) {
-    if (i == j)
+/* sort a list in place with quicksort, recursively
+ * assumes all nodes have the same type */
+void dlist_sort(DList *list) {
+    dlist_sort_helper(list, 0, dlist_length(list) - 1);
+}
+
+
+/* helper function for dlist_sort() */
+void dlist_sort_helper(DList *list, int left, int right) {
+    if (left >= right)
         return;
-    if (i > j) {
-        int tmp = i;
-        i = j;
-        j = tmp;
+
+    int pivot = left;
+    DListNode *current_node = dlist_get_node(list, left);
+    DListNode *pivot_node = dlist_get_node(list, pivot);
+    DListNode *right_node = dlist_get_node(list, right);
+    DListNode *tmp;  /* temporary store node pointer when swapping */
+
+    for (int i = left; i < right; i++) {
+        if (dlist_compare_nodes(current_node, right_node) <= 0) {
+            /* must pass nodes to swap function in order
+             * closer to head first */
+            if (i < pivot)
+                dlist_swap_nodes(list, current_node, pivot_node);
+            else
+                dlist_swap_nodes(list, pivot_node, current_node);
+
+            /* need to swap pointers as well */
+            tmp = current_node;
+            current_node = pivot_node;
+            pivot_node = tmp;
+
+            pivot_node = pivot_node->next;
+            pivot++;
+        }
+        current_node = current_node->next;
     }
 
-    /* position m and n pointers on the node to swap */
-    char m_is_head = i == 0 ? 1 : 0;
-    char n_is_tail = j == dlist_length(list) - 1 ? 1 : 0;
-    DListNode *m = list->head;
-    while (i-- > 0)
-        m = m->next;
-    DListNode *n = list->head;
-    while (j-- > 0)
-        n = n->next;
+    dlist_swap_nodes(list, pivot_node, right_node);
+    dlist_sort_helper(list, left, pivot - 1);
+    dlist_sort_helper(list, pivot + 1, right);
+}
+
+
+/* swap two nodes of the list
+ * note: this function assumes that if the nodes are different,
+ * node 'a' is closer to the head than 'b' */
+void dlist_swap_nodes(DList *list, DListNode *a, DListNode *b) {
+    if (a == b)
+        return;
 
     DListNode **ptr;
 
-    if (!m_is_head) {
-        dlist_swap_node_ptr(&m->prev->next, &n->prev->next);
+    /* if node 'a' is not the list head */
+    if (a->prev != NULL) {
+        /*
+        printf("a is not head, will swap\n");
+        printf("a = %p\n", a);
+        printf("a->prev = %p\n", a->prev);
+        printf("a->prev->next = %p\n", a->prev->next);
+        printf("b = %p\n", b);
+        printf("b->prev = %p\n", b->prev);
+        printf("b->prev->next = %p\n", b->prev->next);
+        */
+        dlist_swap_node_ptr(&a->prev->next, &b->prev->next);
     }
     else {
-        ptr = &n->prev->next;
-        *ptr = m;
+        ptr = &b->prev->next;
+        *ptr = a;
         /* we are swapping the first node: need to reassign 'head' pointer */
         DListNode **head_ptr = &list->head;
-        *head_ptr = n;
+        *head_ptr = b;
     }
 
-    dlist_swap_node_ptr(&m->prev, &n->prev);
+    dlist_swap_node_ptr(&a->prev, &b->prev);
 
-    if (!n_is_tail) {
-        dlist_swap_node_ptr(&m->next->prev, &n->next->prev);
+    /* if node 'b' is not the list tail */
+    if (b->next != NULL) {
+        dlist_swap_node_ptr(&a->next->prev, &b->next->prev);
     }
     else {
-        ptr = &m->next->prev;
-        *ptr = n;
+        ptr = &a->next->prev;
+        *ptr = b;
         /* we are swapping the last node: need to reassign 'tail' pointer */
         DListNode **tail_ptr = &list->tail;
-        *tail_ptr = m;
+        *tail_ptr = a;
     }
 
-    dlist_swap_node_ptr(&m->next, &n->next);
+    dlist_swap_node_ptr(&a->next, &b->next);
 }
 
 
