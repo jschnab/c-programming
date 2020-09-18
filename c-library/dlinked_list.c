@@ -153,7 +153,7 @@ DListNode *dlist_create_node(void *value, char type) {
                 printf("error: malloc failed when creating node\n");
                 exit(1);
             }
-            memcpy(new->val, value, sizeof(int));
+            memcpy(new->val, value, sizeof(float));
             break;
         case STRING:
             new->val = (char *) malloc(strlen(value));
