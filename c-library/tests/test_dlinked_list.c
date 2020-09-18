@@ -1114,6 +1114,95 @@ void test_dlist_sort_4() {
 }
 
 
+/* sort list of integers (worst case) */
+void test_dlist_sort_5() {
+    DList *list = dlist_init();
+    int values[] = {5, 4, 3, 2, 1};
+    int expected[] = {1, 2, 3, 4, 5};
+    int i;
+    for (i = 0; i < 5; i++)
+        dlist_append(list, &values[i], INT);
+    dlist_sort(list);
+
+    DListNode *current;
+    /* traverse list from head to tail */
+    current = list->head;
+    for (i = 0; current != NULL; i++) {
+        if (*(int *)current->val != expected[i] || current->type != INT) {
+            printf("test_dlist_sort_5: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    if (i != 5) {
+        printf("test_dlist_sort_5: FAILED\n");
+        n_fail++;
+        return;
+    }
+    /* traverse list from tail to head */
+    current = list->tail;
+    for (i = 4; current != NULL; i--) {
+        if (*(int *)current->val != expected[i] || current->type != INT) {
+            printf("test_dlist_sort_5: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    if (i != -1) {
+        printf("test_dlist_sort_5: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_sort_5: PASS\n");
+}
+
+
+/* sort list of integers (already sorted) */
+void test_dlist_sort_6() {
+    DList *list = dlist_init();
+    int expected[] = {1, 2, 3, 4, 5};
+    int i;
+    for (i = 0; i < 5; i++)
+        dlist_append(list, &expected[i], INT);
+    dlist_sort(list);
+
+    DListNode *current;
+    /* traverse list from head to tail */
+    current = list->head;
+    for (i = 0; current != NULL; i++) {
+        if (*(int *)current->val != expected[i] || current->type != INT) {
+            printf("test_dlist_sort_6: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->next;
+    }
+    if (i != 5) {
+        printf("test_dlist_sort_6: FAILED\n");
+        n_fail++;
+        return;
+    }
+    /* traverse list from tail to head */
+    current = list->tail;
+    for (i = 4; current != NULL; i--) {
+        if (*(int *)current->val != expected[i] || current->type != INT) {
+            printf("test_dlist_sort_6: FAILED\n");
+            n_fail++;
+            return;
+        }
+        current = current->prev;
+    }
+    if (i != -1) {
+        printf("test_dlist_sort_6: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_dlist_sort_6: PASS\n");
+}
+
+
 /* swap two non-consecutive middle nodes in an integer list */
 void test_dlist_swap_nodes_1() {
     DList *list = dlist_init();
@@ -1353,6 +1442,8 @@ int main(int argc, char *argv[]) {
     test_dlist_sort_2();
     test_dlist_sort_3();
     test_dlist_sort_4();
+    test_dlist_sort_5();
+    test_dlist_sort_6();
     test_dlist_swap_nodes_1();
     test_dlist_swap_nodes_2();
     test_dlist_swap_nodes_3();

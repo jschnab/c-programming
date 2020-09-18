@@ -14,6 +14,7 @@ typedef struct lnode {
 
 void list_append(ListNode *, void *, char);
 ListNode *list_copy(ListNode *);
+ListNode *list_create(void *, char);
 void list_delete(ListNode *, int);
 char list_equal(ListNode *, ListNode *);
 ListNode *list_from_args(int, char, ...);

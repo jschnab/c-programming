@@ -20,6 +20,7 @@ typedef struct lnode {
 
 void list_append(ListNode *, void *, char);
 ListNode *list_copy(ListNode *);
+ListNode *list_create(void *, char);
 void list_delete(ListNode *, int);
 char list_equal(ListNode *, ListNode *);
 void list_insert(ListNode *, void *, char, int);
@@ -36,25 +37,7 @@ void list_append(ListNode *head, void *val, char type) {
     if (head == NULL)
         return;
 
-    ListNode *new = (ListNode *) malloc(sizeof(ListNode));
-    if (new == NULL)
-        return;
-
-    switch (type) {
-        case INT:
-            new->val = malloc(sizeof(int));
-            memcpy(new->val, val, sizeof(int));
-            break;
-        case FLOAT:
-            new->val = malloc(sizeof(float));
-            memcpy(new->val, val, sizeof(float));
-            break;
-        case STRING:
-            new->val = malloc(strlen((char *)val));
-            memcpy(new->val, val, strlen((char *)val));
-            break;
-    }
-    new->type = type;
+    ListNode *new = list_create(val, type);
     ListNode *current;
     current = head;
     while (current->next != NULL)
@@ -83,6 +66,33 @@ ListNode *list_copy(ListNode *head) {
 }
 
 
+/* create a new node given a pointer to a value and a type */
+ListNode *list_create(void *val, char type) {
+    ListNode *new = (ListNode *) malloc(sizeof(ListNode));
+    if (new == NULL) {
+        printf("error: malloc failed when creating new list node\n");
+        exit(1);
+    }
+
+    switch (type) {
+        case INT:
+            new->val = malloc(sizeof(int));
+            memcpy(new->val, val, sizeof(int));
+            break;
+        case FLOAT:
+            new->val = malloc(sizeof(float));
+            memcpy(new->val, val, sizeof(float));
+            break;
+        case STRING:
+            new->val = malloc(strlen((char *)val));
+            memcpy(new->val, val, strlen((char *)val));
+            break;
+    }
+    new->type = type;
+    return new;
+}
+
+
 /* delete the nth element of a list
  * if n > length of list or the node is the only one, do nothing */
 void list_delete(ListNode *head, int n) {
@@ -108,17 +118,22 @@ void list_delete(ListNode *head, int n) {
 }
 
 
-/* determines if two list are identical */
+/* determines if two list are identical, returns a char:
+ * 0 if the lists are not equal
+ * 1 if the lists are equal */
 char list_equal(ListNode *a, ListNode *b) {
-    if (list_length(a) != list_length(b))
+    if (list_length(a) != list_length(b)) {
         return 0;
+    }
     while (a != NULL) {
-        if (a->type != b->type)
+        if (a->type != b->type) {
             return 0;
+        }
         switch(a->type) {
             case INT:
-                if (*(int *)a->val != *(int *)b->val)
+                if (*(int *)a->val != *(int *)b->val) {
                     return 0;
+                }
                 break;
             case FLOAT:
                 if (*(float *)a->val != *(float *)b->val)
@@ -126,7 +141,6 @@ char list_equal(ListNode *a, ListNode *b) {
                 break;
             case STRING:
                 return strcmp((char *)a->val, (char *)b->val);
-                break;
             default:
                 printf("List node type not supported\n");
                 return 0;
@@ -209,24 +223,7 @@ ListNode *list_from_args(int n, char type, ...) {
 void list_insert(ListNode *head, void *val, char type, int n) {
     if (head != NULL && n > 0) {
         ListNode *previous;
-        ListNode *new = (ListNode *) malloc(sizeof(ListNode));
-
-        switch (type) {
-            case INT:
-                new->val = malloc(sizeof(int));
-                memcpy(new->val, val, sizeof(int));
-                break;
-            case FLOAT:
-                new->val = malloc(sizeof(float));
-                memcpy(new->val, val, sizeof(float));
-                break;
-            case STRING:
-                new->val = malloc(strlen((char *)val));
-                memcpy(new->val, val, strlen((char *)val));
-                break;
-        }
-        new->type = type;
-
+        ListNode *new = list_create(val, type);
         while (n-- > 0 && head != NULL) {
             previous = head;
             head = head->next;
@@ -239,22 +236,7 @@ void list_insert(ListNode *head, void *val, char type, int n) {
 
 /* insert a value at the front of the list (index 0) */
 void list_insert_front(ListNode **head, void *val, char type) {
-    ListNode *new = (ListNode *) malloc(sizeof(ListNode));
-    switch (type) {
-        case INT:
-            new->val = malloc(sizeof(int));
-            memcpy(new->val, val, sizeof(int));
-            break;
-        case FLOAT:
-            new->val = malloc(sizeof(float));
-            memcpy(new->val, val, sizeof(float));
-            break;
-        case STRING:
-            new->val = malloc(strlen((char *)val));
-            memcpy(new->val, val, strlen((char *)val));
-            break;
-    }
-    new->type = type;
+    ListNode *new = list_create(val, type);
     new->next = *head;
     *head = new;
 }

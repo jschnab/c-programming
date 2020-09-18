@@ -428,7 +428,7 @@ void dlist_sort_helper(DList *list, int left, int right) {
 
     for (int i = left; i < right; i++) {
         if (dlist_compare_nodes(current_node, right_node) <= 0) {
-            /* must pass nodes to swap function in order
+            /* nodes must be passed ordered to swap function
              * closer to head first */
             if (i < pivot)
                 dlist_swap_nodes(list, current_node, pivot_node);
@@ -463,15 +463,6 @@ void dlist_swap_nodes(DList *list, DListNode *a, DListNode *b) {
 
     /* if node 'a' is not the list head */
     if (a->prev != NULL) {
-        /*
-        printf("a is not head, will swap\n");
-        printf("a = %p\n", a);
-        printf("a->prev = %p\n", a->prev);
-        printf("a->prev->next = %p\n", a->prev->next);
-        printf("b = %p\n", b);
-        printf("b->prev = %p\n", b->prev);
-        printf("b->prev->next = %p\n", b->prev->next);
-        */
         dlist_swap_node_ptr(&a->prev->next, &b->prev->next);
     }
     else {
