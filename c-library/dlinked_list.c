@@ -72,9 +72,11 @@ void dlist_append(DList *list, void *val, char type) {
 
 /* compare the value of two nodes, the return value is an integer:
  *  0 if nodes have the same value
- * -1 if node A is < node B
- *  1 if node A is > node B
- *  this function assumes nodes have the same type */
+ * -1 if node A is < node B and nodes have a numerical value
+ *  1 if node A is > node B and nodes have a numerical value
+ *  result of strcmp() if nodes have a string value
+ *
+ *  Note: this function assumes nodes have the same type */
 int dlist_compare_nodes(DListNode *a, DListNode *b) {
     int i1, i2;
     float f1, f2;

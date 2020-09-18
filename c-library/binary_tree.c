@@ -12,7 +12,6 @@ enum DATA_TYPES {
 
 typedef struct node {
     void *val;
-    char type;
     struct node *left;
     struct node *right;
 } BSTNode;
@@ -20,13 +19,34 @@ typedef struct node {
 
 typedef struct bst {
     BSTNode *head;
+    char type;
     int n;
 } BST;
 
 
-int bst_compare_nodes(BSTNode *, BSTNode *);
+void bst_add_node(BSTNode *, BSTNode *, char);
+int bst_compare_nodes(BSTNode *, BSTNode *, char);
 BSTNode *bst_create_node(void *, char);
-BST *bst_init();
+BST *bst_init(char);
+void bst_insert(BST *, void *);
+
+
+/* recursively add a new node to the left or right of an existing node
+ * given its type and value */
+void bst_add_node(BSTNode *node, BSTNode *new, char type) {
+    if (bst_compare_nodes(new, node, type) <= 0) {
+        if (node->left == NULL)
+            node->left = new;
+        else
+            bst_add_node(node->left, new, type);
+    }
+    else {
+        if (node->right == NULL)
+            node->right = new;
+        else
+            bst_add_node(node->right, new, type);
+    }
+}
 
 
 /* compare the value of two BST nodes, returns an integer:
@@ -34,11 +54,11 @@ BST *bst_init();
  *  1 if the value of A > B
  * -1 if the value of A < B
  * Important: this function assumes nodes have the same type */
-int bst_compare_nodes(BSTNode *a, BSTNode *b) {
+int bst_compare_nodes(BSTNode *a, BSTNode *b, char type) {
     int i1, i2;
     float f1, f2;
     char *s1, *s2;
-    switch (a->type) {
+    switch (type) {
         case INT:
             i1 = *(int *)a->val;
             i2 = *(int *)b->val;
@@ -69,12 +89,13 @@ int bst_compare_nodes(BSTNode *a, BSTNode *b) {
 
 
 /* initialize an empty binary search tree */
-BST *bst_init() {
+BST *bst_init(char type) {
     BST *tree = (BST *) malloc(sizeof(BST));
     if (tree == NULL) {
         printf("error: malloc failed when initializing BST\n");
         exit(1);
     }
+    tree->type = type;
     tree->head = NULL;
     tree->n = 0;
     return tree;
@@ -88,7 +109,6 @@ BSTNode *bst_create_node(void *val, char type) {
         printf("error: malloc failed when initializing BSTNode\n");
         exit(1);
     }
-    node->type = type;
     switch (type) {
         case INT:
             node->val = (int *) malloc(sizeof(int));
@@ -118,4 +138,11 @@ BSTNode *bst_create_node(void *val, char type) {
     node->left = NULL;
     node->right = NULL;
     return node;
+}
+
+
+/* insert a new value into the tree */
+void bst_insert(BST *tree, void *val) {
+    BSTNode *new = bst_create_node(val, tree->type);
+    bst_add_node(tree->head, new, tree->type);
 }
