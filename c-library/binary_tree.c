@@ -29,6 +29,8 @@ int bst_compare_nodes(BSTNode *, BSTNode *, char);
 BSTNode *bst_create_node(void *, char);
 BST *bst_init(char);
 void bst_insert(BST *, void *);
+void bst_print_inorder(BST *);
+void bst_print_inorder_helper(BSTNode *, char);
 
 
 /* recursively add a new node to the left or right of an existing node
@@ -144,5 +146,40 @@ BSTNode *bst_create_node(void *val, char type) {
 /* insert a new value into the tree */
 void bst_insert(BST *tree, void *val) {
     BSTNode *new = bst_create_node(val, tree->type);
-    bst_add_node(tree->head, new, tree->type);
+    if (tree->head != NULL)
+        bst_add_node(tree->head, new, tree->type);
+    else
+        tree->head = new;
+}
+
+
+/* print the list of tree nodes with inorder traversal */
+void bst_print_inorder(BST *tree) {
+    printf("[ ");
+    if (tree->head != NULL)
+        bst_print_inorder_helper(tree->head, tree->type);
+    printf("]\n");
+}
+
+
+/* help print the list or tree nodes with inorder traversal */
+void bst_print_inorder_helper(BSTNode *head, char type) {
+    if (head->left != NULL)
+        bst_print_inorder_helper(head->left, type);
+
+    switch (type) {
+        case INT:
+            printf("%d, ", *(int *)head->val);
+            break;
+        case FLOAT:
+            printf("%f, ", *(float *)head->val);
+            break;
+        case STRING:
+            printf("%s, ", (char *)head->val);
+        default:
+            printf("?, ");
+    }
+
+    if (head->right != NULL)
+        bst_print_inorder_helper(head->right, type);
 }

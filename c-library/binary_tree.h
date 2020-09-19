@@ -29,3 +29,5 @@ int bst_compare_nodes(BSTNode *, BSTNode *, char);
 BSTNode *bst_create_node(void *, char);
 BST *bst_init(char);
 void bst_insert(BST *, void *);
+void bst_print_inorder(BST *);
+void bst_print_inorder_helper(BSTNode *, char);

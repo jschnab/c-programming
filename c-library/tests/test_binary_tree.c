@@ -67,6 +67,58 @@ void test_bst_add_node_3() {
 }
 
 
+/* add node to the left of another node (node < other)
+ * recursive case */
+void test_bst_add_node_4() {
+    int i = 5;
+    int j = 9;
+    int k = 8;
+    BSTNode *head = bst_create_node(&i, INT);
+    BSTNode *right = bst_create_node(&j, INT);
+    BSTNode *new = bst_create_node(&k, INT);
+    bst_add_node(head, right, INT);
+    bst_add_node(head, new, INT);
+    if (
+        *(int *)head->val != i ||
+        head->left != NULL ||
+        *(int *)head->right->val != j ||
+        head->right->right != NULL ||
+        *(int *)head->right->left->val != k
+    ) {
+        printf("test_bst_add_node_4: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_add_node_4: PASS\n");
+}
+
+
+/* add node to the right of another node (node > other)
+ * recursive case */
+void test_bst_add_node_5() {
+    int i = 5;
+    int j = 0;
+    int k = 3;
+    BSTNode *head = bst_create_node(&i, INT);
+    BSTNode *left = bst_create_node(&j, INT);
+    BSTNode *new = bst_create_node(&k, INT);
+    bst_add_node(head, left, INT);
+    bst_add_node(head, new, INT);
+    if (
+        *(int *)head->val != i ||
+        head->right != NULL ||
+        *(int *)head->left->val != j ||
+        head->left->left != NULL ||
+        *(int *)head->left->right->val != k
+    ) {
+        printf("test_bst_add_node_5: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_add_node_5: PASS\n");
+}
+
+
 /* compare two different integer nodes
  * node 'a' is lesser than node 'b' */
 void test_bst_compare_nodes_1() {
@@ -292,11 +344,24 @@ void test_bst_init_3() {
 }
 
 
+/* print integer BST, inorder traversal */
+void test_bst_print_inorder_1() {
+    int values[] = {10, 4, 11, 1, 22, 5, 16};
+    BST *tree = bst_init(INT);
+    for (int i = 0; i < 7; i++) {
+        bst_insert(tree, &values[i]);
+    }
+    bst_print_inorder(tree);
+}
+
+
 int main(int argc, char *argv[]) {
     printf("Running unit tests for binary search trees...\n\n");
     test_bst_add_node_1();
     test_bst_add_node_2();
     test_bst_add_node_3();
+    test_bst_add_node_4();
+    test_bst_add_node_5();
     test_bst_compare_nodes_1();
     test_bst_compare_nodes_2();
     test_bst_compare_nodes_3();
@@ -312,5 +377,6 @@ int main(int argc, char *argv[]) {
     test_bst_init_1();
     test_bst_init_2();
     test_bst_init_3();
+    test_bst_print_inorder_1();
     printf("\nFinished tests\nNumber of failures: %d\n", n_fail);
 }
