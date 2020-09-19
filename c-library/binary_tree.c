@@ -31,7 +31,11 @@ BST *bst_init(char);
 void bst_insert(BST *, void *);
 void bst_print_inorder(BST *);
 void bst_print_inorder_helper(BSTNode *, char);
-
+void bst_print_preorder(BST *);
+void bst_print_preorder_helper(BSTNode *, char);
+void bst_print_postorder(BST *);
+void bst_print_postorder_helper(BSTNode *, char);
+void bst_print_val(void *, char);
 
 /* recursively add a new node to the left or right of an existing node
  * given its type and value */
@@ -166,20 +170,62 @@ void bst_print_inorder(BST *tree) {
 void bst_print_inorder_helper(BSTNode *head, char type) {
     if (head->left != NULL)
         bst_print_inorder_helper(head->left, type);
+    bst_print_val(head->val, type);
+    if (head->right != NULL)
+        bst_print_inorder_helper(head->right, type);
+}
 
+
+/* print the list of tree nodes with preorder traversal */
+void bst_print_preorder(BST *tree) {
+    printf("[ ");
+    if (tree->head != NULL)
+        bst_print_preorder_helper(tree->head, tree->type);
+    printf("]\n");
+}
+
+
+/* help print the list or tree nodes with preorder traversal */
+void bst_print_preorder_helper(BSTNode *head, char type) {
+    bst_print_val(head->val, type);
+    if (head->left != NULL)
+        bst_print_preorder_helper(head->left, type);
+    if (head->right != NULL)
+        bst_print_preorder_helper(head->right, type);
+}
+
+
+/* print the list of tree nodes with postorder traversal */
+void bst_print_postorder(BST *tree) {
+    printf("[ ");
+    if (tree->head != NULL)
+        bst_print_postorder_helper(tree->head, tree->type);
+    printf("]\n");
+}
+
+
+/* help print the list or tree nodes with postorder traversal */
+void bst_print_postorder_helper(BSTNode *head, char type) {
+    if (head->left != NULL)
+        bst_print_postorder_helper(head->left, type);
+    if (head->right != NULL)
+        bst_print_postorder_helper(head->right, type);
+    bst_print_val(head->val, type);
+}
+
+
+/* help print node value with the correct format */
+void bst_print_val(void *val, char type) {
     switch (type) {
         case INT:
-            printf("%d, ", *(int *)head->val);
+            printf("%d, ", *(int *)val);
             break;
         case FLOAT:
-            printf("%f, ", *(float *)head->val);
+            printf("%f, ", *(float *)val);
             break;
         case STRING:
-            printf("%s, ", (char *)head->val);
+            printf("%s, ", (char *)val);
         default:
             printf("?, ");
     }
-
-    if (head->right != NULL)
-        bst_print_inorder_helper(head->right, type);
 }

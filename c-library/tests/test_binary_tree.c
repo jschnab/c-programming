@@ -355,6 +355,28 @@ void test_bst_print_inorder_1() {
 }
 
 
+/* print integer BST, preorder traversal */
+void test_bst_print_preorder_1() {
+    int values[] = {10, 4, 11, 1, 22, 5, 16};
+    BST *tree = bst_init(INT);
+    for (int i = 0; i < 7; i++) {
+        bst_insert(tree, &values[i]);
+    }
+    bst_print_preorder(tree);
+}
+
+
+/* print integer BST, postorder traversal */
+void test_bst_print_postorder_1() {
+    int values[] = {10, 4, 11, 1, 22, 5, 16};
+    BST *tree = bst_init(INT);
+    for (int i = 0; i < 7; i++) {
+        bst_insert(tree, &values[i]);
+    }
+    bst_print_postorder(tree);
+}
+
+
 int main(int argc, char *argv[]) {
     printf("Running unit tests for binary search trees...\n\n");
     test_bst_add_node_1();
@@ -378,5 +400,7 @@ int main(int argc, char *argv[]) {
     test_bst_init_2();
     test_bst_init_3();
     test_bst_print_inorder_1();
+    test_bst_print_preorder_1();
+    test_bst_print_postorder_1();
     printf("\nFinished tests\nNumber of failures: %d\n", n_fail);
 }

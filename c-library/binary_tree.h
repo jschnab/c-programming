@@ -31,3 +31,8 @@ BST *bst_init(char);
 void bst_insert(BST *, void *);
 void bst_print_inorder(BST *);
 void bst_print_inorder_helper(BSTNode *, char);
+void bst_print_preorder(BST *);
+void bst_print_preorder_helper(BSTNode *, char);
+void bst_print_postorder(BST *);
+void bst_print_postorder_helper(BSTNode *, char);
+void bst_print_val(void *, char);
