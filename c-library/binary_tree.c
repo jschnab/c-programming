@@ -27,6 +27,7 @@ typedef struct bst {
 void bst_add_node(BSTNode *, BSTNode *, char);
 int bst_compare_nodes(BSTNode *, BSTNode *, char);
 BSTNode *bst_create_node(void *, char);
+BST *bst_from_array(void *, char, int);
 BST *bst_init(char);
 void bst_insert(BST *, void *);
 void bst_print_inorder(BST *);
@@ -94,6 +95,26 @@ int bst_compare_nodes(BSTNode *a, BSTNode *b, char type) {
 }
 
 
+/* make a BST from an array, given its type and length n */
+BST *bst_from_array(void *array, char type, int n) {
+    BST *tree = bst_init(type);
+    for (int i = 0; i < n; i++) {
+        switch (type) {
+            case INT:
+                bst_insert(tree, &((int *)array)[i]);
+                break;
+            case FLOAT:
+                bst_insert(tree, &((float *)array)[i]);
+                break;
+            case STRING:
+                bst_insert(tree, ((char **)array)[i]);
+                break;
+        }
+    }
+    return tree;
+}
+
+
 /* initialize an empty binary search tree */
 BST *bst_init(char type) {
     BST *tree = (BST *) malloc(sizeof(BST));
@@ -154,6 +175,7 @@ void bst_insert(BST *tree, void *val) {
         bst_add_node(tree->head, new, tree->type);
     else
         tree->head = new;
+    tree->n++;
 }
 
 

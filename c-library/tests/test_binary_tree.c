@@ -288,6 +288,7 @@ void test_bst_create_node_2() {
     printf("test_bst_create_node_2: PASS\n");
 }
 
+
 /* create an string node */
 void test_bst_create_node_3() {
     char *value = "hello";
@@ -302,6 +303,74 @@ void test_bst_create_node_3() {
         return;
     }
     printf("test_bst_create_node_3: PASS\n");
+}
+
+
+/* make a tree from an integer array */
+void test_bst_from_array_1() {
+    int array[3] = {2, 1, 3};
+    BST *tree = bst_from_array(array, INT, 3);
+    if (tree->n != 3 || tree->type != INT) {
+        printf("test_bst_from_array_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    if (
+        *(int *)tree->head->val != 2 ||
+        *(int *)tree->head->left->val != 1 ||
+        *(int *)tree->head->right->val != 3
+    ) {
+        printf("test_bst_from_array_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_from_array_1: PASS\n");
+}
+
+
+/* make a tree from a float array */
+void test_bst_from_array_2(){
+    char type = FLOAT;
+    float array[] = {2.0, 1.0, 3.0};
+    BST *tree = bst_from_array(array, type, 3);;
+    if (tree->type != type || tree->n != 3) {
+        printf("test_bst_from_array_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    if (
+        *(float *)tree->head->val != array[0] ||
+        *(float *)tree->head->left->val != array[1] ||
+        *(float *)tree->head->right->val != array[2]
+    ) {
+        printf("test_bst_from_array_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_from_array_2: PASS\n");
+}
+
+
+/* make a tree from a string array */
+void test_bst_from_array_3(){
+    char type = STRING;
+    char *array[] = {"new", "brave", "world"};
+    BST *tree = bst_from_array(array, type, 3);
+    if (tree->type != type || tree->n != 3) {
+        printf("test_bst_from_array_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    if (
+        strcmp((char *)tree->head->val, array[0]) != 0  ||
+        strcmp((char *)tree->head->left->val, array[1]) != 0 ||
+        strcmp((char *)tree->head->right->val, array[2]) != 0
+    ) {
+        printf("test_bst_from_array_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_from_array_3: PASS\n");
 }
 
 
@@ -341,6 +410,86 @@ void test_bst_init_3() {
         return;
     }
     printf("test_bst_init_3: PASS\n");
+}
+
+/* insert integer nodes into tree */
+void test_bst_insert_1(){
+    char type = INT;
+    BST *tree = bst_init(type);
+    int values[] = {2, 1, 3};
+    int i;
+    for (i = 0; i < 3; i++) {
+        bst_insert(tree, &values[i]);
+    }
+    if (tree->type != type || tree->n != 3) {
+        printf("test_bst_insert_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    if (
+        *(int *)tree->head->val != 2 ||
+        *(int *)tree->head->left->val != 1 ||
+        *(int *)tree->head->right->val != 3
+    ) {
+        printf("test_bst_insert_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_insert_1: PASS\n");
+}
+
+
+/* insert float nodes into tree */
+void test_bst_insert_2(){
+    char type = FLOAT;
+    BST *tree = bst_init(type);
+    float values[] = {2.0, 1.0, 3.0};
+    int i;
+    for (i = 0; i < 3; i++) {
+        bst_insert(tree, &values[i]);
+    }
+    if (tree->type != type || tree->n != 3) {
+        printf("test_bst_insert_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    if (
+        *(float *)tree->head->val != 2.0 ||
+        *(float *)tree->head->left->val != 1.0 ||
+        *(float *)tree->head->right->val != 3.0
+    ) {
+        printf("test_bst_insert_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_insert_2: PASS\n");
+}
+
+
+/* insert string nodes into tree */
+void test_bst_insert_3(){
+    char type = STRING;
+    BST *tree = bst_init(type);
+    char *values[] = {"new", "brave", "world"};
+    int i;
+    for (i = 0; i < 3; i++) {
+        bst_insert(tree, values[i]);
+    }
+    if (tree->type != type || tree->n != 3) {
+        printf("test_bst_insert_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    if (
+        strcmp((char *)tree->head->val, values[0]) != 0  ||
+        strcmp((char *)tree->head->left->val, values[1]) != 0 ||
+        strcmp((char *)tree->head->right->val, values[2]) != 0
+    ) {
+        printf("test_bst_insert_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_insert_3: PASS\n");
 }
 
 
@@ -396,9 +545,15 @@ int main(int argc, char *argv[]) {
     test_bst_create_node_1();
     test_bst_create_node_2();
     test_bst_create_node_3();
+    test_bst_from_array_1();
+    test_bst_from_array_2();
+    test_bst_from_array_3();
     test_bst_init_1();
     test_bst_init_2();
     test_bst_init_3();
+    test_bst_insert_1();
+    test_bst_insert_2();
+    test_bst_insert_3();
     test_bst_print_inorder_1();
     test_bst_print_preorder_1();
     test_bst_print_postorder_1();

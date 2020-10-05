@@ -27,6 +27,7 @@ typedef struct bst {
 void bst_add_node(BSTNode *, BSTNode *, char);
 int bst_compare_nodes(BSTNode *, BSTNode *, char);
 BSTNode *bst_create_node(void *, char);
+BST *bst_from_array(void *, char, int);
 BST *bst_init(char);
 void bst_insert(BST *, void *);
 void bst_print_inorder(BST *);
