@@ -1,4 +1,5 @@
 #include "../binary_tree.h"
+#include "../data_types.h"
 
 
 static int n_fail;
@@ -526,6 +527,23 @@ void test_bst_print_postorder_1() {
 }
 
 
+/* make an integer array from a tree */
+void test_bst_to_array_1() {
+    int array[] = {2, 1, 3};
+    BST *tree = bst_from_array(array, INT, 3);
+    int result[3];
+    bst_to_array(tree, result);
+    for (int i = 1; i <= 3; i++) {
+        if (result[i-1] != i) {
+            printf("test_bst_to_array_1: FAILED\n");
+            n_fail++;
+            return;
+        }
+    }
+    printf("test_bst_to_array_1: PASS\n");
+}
+
+
 int main(int argc, char *argv[]) {
     printf("Running unit tests for binary search trees...\n\n");
     test_bst_add_node_1();
@@ -554,6 +572,7 @@ int main(int argc, char *argv[]) {
     test_bst_insert_1();
     test_bst_insert_2();
     test_bst_insert_3();
+    test_bst_to_array_1();
     test_bst_print_inorder_1();
     test_bst_print_preorder_1();
     test_bst_print_postorder_1();

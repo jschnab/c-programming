@@ -2,13 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-
-
-enum DLIST_TYPES {
-    INT    = 1,
-    FLOAT  = 2,
-    STRING = 3,
-};
+#include "data_types.h"
 
 
 typedef struct dlnode {

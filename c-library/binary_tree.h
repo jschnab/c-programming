@@ -1,13 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-
-enum DATA_TYPES {
-    INT    = 1,
-    FLOAT  = 2,
-    STRING = 3,
-};
+#include "data_types.h"
 
 
 typedef struct node {
@@ -37,3 +31,4 @@ void bst_print_preorder_helper(BSTNode *, char);
 void bst_print_postorder(BST *);
 void bst_print_postorder_helper(BSTNode *, char);
 void bst_print_val(void *, char);
+void bst_to_array(BST *, void *);

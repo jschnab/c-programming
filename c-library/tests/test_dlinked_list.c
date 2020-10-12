@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include "../dlinked_list.h"
+#include "../data_types.h"
 
 
 static int n_fail = 0;

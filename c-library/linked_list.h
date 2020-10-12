@@ -1,10 +1,3 @@
-enum LIST_TYPES {
-    INT    = 1,
-    FLOAT  = 2,
-    STRING = 3,
-};
-
-
 typedef struct lnode {
     void *val;
     struct lnode *next;  /* remember memory for this is not allocated */

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../linked_list.h"
+#include "../data_types.h"
 
 
 static int n_fail = 0;

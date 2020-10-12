@@ -1,13 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-
-enum DATA_TYPES {
-    INT    = 1,
-    FLOAT  = 2,
-    STRING = 3,
-};
+#include "data_types.h"
 
 
 typedef struct node {
@@ -37,6 +31,7 @@ void bst_print_preorder_helper(BSTNode *, char);
 void bst_print_postorder(BST *);
 void bst_print_postorder_helper(BSTNode *, char);
 void bst_print_val(void *, char);
+void bst_to_array(BST *, void *);
 
 /* recursively add a new node to the left or right of an existing node
  * given its type and value */
@@ -249,5 +244,56 @@ void bst_print_val(void *val, char type) {
             printf("%s, ", (char *)val);
         default:
             printf("?, ");
+    }
+}
+
+
+/* populate a given array with node values from a tree
+ * we use the Morris algorithm, iterative and uses no stack */
+void bst_to_array(BST *tree, void *array) {
+    BSTNode *node = tree->head;
+    BSTNode *predecessor;
+
+    while (node != NULL) {
+
+        if (node->left != NULL) {
+            predecessor = node->left;
+
+            while (predecessor->right != NULL && predecessor->right != node)
+                predecessor = predecessor->right;
+
+            if (predecessor->right == NULL) {
+                predecessor->right = node;
+                node = node->left;
+            }
+            else {
+                switch (tree->type) {
+                    case INT:
+                        *(int *)array = *(int *)node->val;
+                        array += sizeof(int);
+                        break;
+                    case FLOAT:
+                        *(float *)array = *(float *)node->val;
+                        array += sizeof(float);
+                        break;
+                }
+                predecessor->right = NULL;
+                node = node->right;
+            }
+
+        }
+        else {
+            switch (tree->type) {
+                case INT:
+                    *(int *)array = *(int *)node->val;
+                    array += sizeof(int);
+                    break;
+                case FLOAT:
+                    *(float *)array = *(float *)node->val;
+                    array += sizeof(float);
+                    break;
+            }
+            node = node->right;
+        }
     }
 }

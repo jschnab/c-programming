@@ -2,12 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "linked_list.h"
-
-
-enum BOOL {
-    TRUE  = 1,
-    FALSE = 0,
-};
+#include "data_types.h"
 
 
 typedef struct stack {
