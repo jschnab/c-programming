@@ -330,7 +330,7 @@ void test_bst_from_array_1() {
 
 
 /* make a tree from a float array */
-void test_bst_from_array_2(){
+void test_bst_from_array_2() {
     char type = FLOAT;
     float array[] = {2.0, 1.0, 3.0};
     BST *tree = bst_from_array(array, type, 3);;
@@ -353,7 +353,7 @@ void test_bst_from_array_2(){
 
 
 /* make a tree from a string array */
-void test_bst_from_array_3(){
+void test_bst_from_array_3() {
     char type = STRING;
     char *array[] = {"new", "brave", "world"};
     BST *tree = bst_from_array(array, type, 3);
@@ -372,6 +372,47 @@ void test_bst_from_array_3(){
         return;
     }
     printf("test_bst_from_array_3: PASS\n");
+}
+
+
+/* get height of empty tree */
+void test_bst_height_1() {
+    BST *tree = bst_init(INT);
+    if (bst_height(tree) != 0) {
+        printf("test_bst_height_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_height_1: PASS\n");
+}
+
+
+/* get height of tree with depth of 3 */
+void test_bst_height_2() {
+    BST *tree = bst_init(INT);
+    int values[] = {4, 2, 3, 1, 5};
+    for (int i = 0; i < 5; i++)
+        bst_insert(tree, &values[i]);
+    if (bst_height(tree) != 3) {
+        printf("test_bst_height_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_height_2: PASS\n");
+}
+
+
+/* get height of tree with single node */
+void test_bst_height_3() {
+    BST *tree = bst_init(INT);
+    int value = 11;
+    bst_insert(tree, &value);
+    if (bst_height(tree) != 1) {
+        printf("test_bst_height_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_height_3: PASS\n");
 }
 
 
@@ -566,6 +607,9 @@ int main(int argc, char *argv[]) {
     test_bst_from_array_1();
     test_bst_from_array_2();
     test_bst_from_array_3();
+    test_bst_height_1();
+    test_bst_height_2();
+    test_bst_height_3();
     test_bst_init_1();
     test_bst_init_2();
     test_bst_init_3();

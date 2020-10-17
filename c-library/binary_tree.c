@@ -3,6 +3,8 @@
 #include <string.h>
 #include "data_types.h"
 
+#define max(a, b) (a > b ? a : b)
+
 
 typedef struct node {
     void *val;
@@ -22,6 +24,8 @@ void bst_add_node(BSTNode *, BSTNode *, char);
 int bst_compare_nodes(BSTNode *, BSTNode *, char);
 BSTNode *bst_create_node(void *, char);
 BST *bst_from_array(void *, char, int);
+int bst_height(BST *);
+int bst_height_helper(BSTNode *);
 BST *bst_init(char);
 void bst_insert(BST *, void *);
 void bst_print_inorder(BST *);
@@ -107,6 +111,22 @@ BST *bst_from_array(void *array, char type, int n) {
         }
     }
     return tree;
+}
+
+
+/* get the height of the tree */
+int bst_height(BST *tree) {
+    return bst_height_helper(tree->head);
+}
+
+
+/* helper function for the `bst_height()` function */
+int bst_height_helper(BSTNode *node) {
+    if (node == NULL)
+        return 0;
+    int left = bst_height_helper(node->left);
+    int right = bst_height_helper(node->right);
+    return 1 + max(left, right);
 }
 
 
