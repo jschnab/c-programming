@@ -264,6 +264,138 @@ void test_bst_compare_nodes_9() {
 }
 
 
+/* compare an integer node with an integer value
+ * node is equal to value */
+void test_bst_compare_node_value_1() {
+    int i = 2;
+    BSTNode *node = bst_create_node(&i, INT);
+    if (bst_compare_node_value(node, &i, INT) != 0) {
+         printf("test_bst_compare_node_value_1: FAILED\n");
+         n_fail++;
+         return;
+    }
+    printf("test_bst_compare_node_value_1: PASS\n");
+}
+
+
+/* compare an integer node with an integer value
+ * node is less than value */
+void test_bst_compare_node_value_2() {
+    int i1 = 3;
+    int i2 = 5;
+    BSTNode *node = bst_create_node(&i1, INT);
+    if (bst_compare_node_value(node, &i2, INT) >= 0) {
+        printf("test_bst_compare_node_value_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_compare_node_value_2: PASS\n");
+}
+
+
+/* compare an integer node with an integer value
+ * node is greater than value */
+void test_bst_compare_node_value_3() {
+    int i1 = 8;
+    int i2 = 5;
+    BSTNode *node = bst_create_node(&i1, INT);
+    if (bst_compare_node_value(node, &i2, INT) <= 0) {
+        printf("test_bst_compare_node_value_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_compare_node_value_3: PASS\n");
+}
+
+
+/* compare a float node with a float value
+ * node is equal to value */
+void test_bst_compare_node_value_4() {
+    float f = 2.0;
+    BSTNode *node = bst_create_node(&f, FLOAT);
+    if (bst_compare_node_value(node, &f, FLOAT) != 0) {
+         printf("test_bst_compare_node_value_4: FAILED\n");
+         n_fail++;
+         return;
+    }
+    printf("test_bst_compare_node_value_4: PASS\n");
+}
+
+
+/* compare a float node with a float value
+ * node is less than value */
+void test_bst_compare_node_value_5() {
+    float f1 = 3.0;
+    float f2 = 5.0;
+    BSTNode *node = bst_create_node(&f1, FLOAT);
+    if (bst_compare_node_value(node, &f2, FLOAT) >= 0) {
+        printf("test_bst_compare_node_value_5: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_compare_node_value_5: PASS\n");
+}
+
+
+/* compare a float node with a float value
+ * node is greater than value */
+void test_bst_compare_node_value_6() {
+    float f1 = 8.0;
+    float f2 = 5.0;
+    BSTNode *node = bst_create_node(&f1, FLOAT);
+    if (bst_compare_node_value(node, &f2, FLOAT) <= 0) {
+        printf("test_bst_compare_node_value_6: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_compare_node_value_6: PASS\n");
+}
+
+
+/* compare a string node with a sting
+ * node is equal to string */
+void test_bst_compare_node_value_7() {
+    char *s = "hello";
+    BSTNode *node = bst_create_node(s, STRING);
+    if (bst_compare_node_value(node, s, STRING) != 0) {
+         printf("test_bst_compare_node_value_7: FAILED\n");
+         n_fail++;
+         return;
+    }
+    printf("test_bst_compare_node_value_7: PASS\n");
+}
+
+
+/* compare a string node with a sting
+ * node is less than string */
+void test_bst_compare_node_value_8() {
+    char *s1 = "hello";
+    char *s2 = "world";
+    BSTNode *node = bst_create_node(s1, STRING);
+    if (bst_compare_node_value(node, s2, STRING) >= 0) {
+        printf("test_bst_compare_node_value_8: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_compare_node_value_8: PASS\n");
+}
+
+
+/* compare a string node with a sting
+ * node is greater than string */
+void test_bst_compare_node_value_9() {
+    char *s1 = "world";
+    char *s2 = "hello";
+    BSTNode *node = bst_create_node(s1, STRING);
+    if (bst_compare_node_value(node, s2, STRING) <= 0) {
+        printf("test_bst_compare_node_value_9: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_compare_node_value_9: PASS\n");
+}
+
+
 /* create an integer node */
 void test_bst_create_node_1() {
     int value = 5;
@@ -304,6 +436,178 @@ void test_bst_create_node_3() {
         return;
     }
     printf("test_bst_create_node_3: PASS\n");
+}
+
+
+/* delete root from integer tree with 2 levels */
+void test_bst_delete_1() {
+    int values[] = {4, 2, 6};
+    BST *tree = bst_from_array(values, INT, 3);
+    bst_delete(tree, &values[0]);
+    if (
+        tree->n != 2 ||
+        *(int *)tree->head->val != 2 ||
+        tree->head->left != NULL ||
+        *(int *)tree->head->right->val != 6 ||
+        tree->head->right->left != NULL ||
+        tree->head->right->right != NULL
+    ) {
+        printf("test_bst_delete_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_delete_1: PASS\n");
+}
+
+
+/* delete root from integer tree with single node */
+void test_bst_delete_2() {
+    int values[] = {11};
+    BST *tree = bst_from_array(values, INT, 1);
+    bst_delete(tree, &values[0]);
+    if (tree->n != 0 || tree->head != NULL) {
+        printf("test_bst_delete_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_delete_2: PASS\n");
+}
+
+
+/* delete from empty integer tree */
+void test_bst_delete_3() {
+    int value = 7;
+    BST *tree = bst_init(INT);
+    bst_delete(tree, &value);
+    if (tree->n != 0 || tree->head != NULL) {
+        printf("test_bst_delete_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_delete_3: PASS\n");
+}
+
+
+/* delete leaf from integer tree with 2 levels */
+void test_bst_delete_4() {
+    int values[] = {4, 2, 6};
+    BST *tree = bst_from_array(values, INT, 3);
+    bst_delete(tree, &values[2]);
+    if (
+        tree->n != 2 ||
+        *(int *)tree->head->val != 4 ||
+        tree->head->right != NULL ||
+        *(int *)tree->head->left->val != 2 ||
+        tree->head->left->left != NULL ||
+        tree->head->left->right != NULL
+    ) {
+        printf("test_bst_delete_4: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_delete_4: PASS\n");
+}
+
+
+/* delete single node */
+void test_bst_delete_helper_1() {
+    int i = 3;
+    BSTNode *node = bst_create_node(&i, INT);
+    BSTNode *result = bst_delete_helper(node, &i, INT);
+    if (result != NULL) {
+        printf("test_bst_delete_helper_1: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_delete_helper_1: PASS\n");
+}
+
+
+/* delete left leaf node at level 2 of tree*/
+void test_bst_delete_helper_2() {
+    int values[] = {2, 1};
+    BSTNode *node0 = bst_create_node(&values[0], INT);
+    BSTNode *node1 = bst_create_node(&values[1], INT);
+    bst_add_node(node0, node1, INT);
+    BSTNode *result = bst_delete_helper(node0, &values[1], INT);
+    if (*(int *)result->val != 2 || result->left != NULL || result->right != NULL) {
+        printf("test_bst_delete_helper_2: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_delete_helper_2: PASS\n");
+}
+
+
+/* delete right leaf node at level 2 of tree*/
+void test_bst_delete_helper_3() {
+    int values[] = {2, 3};
+    BSTNode *node0 = bst_create_node(&values[0], INT);
+    BSTNode *node1 = bst_create_node(&values[1], INT);
+    bst_add_node(node0, node1, INT);
+    BSTNode *result = bst_delete_helper(node0, &values[1], INT);
+    if (*(int *)result->val != 2 || result->left != NULL || result->right != NULL) {
+        printf("test_bst_delete_helper_3: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_delete_helper_3: PASS\n");
+}
+
+
+/* delete root node with single left child */
+void test_bst_delete_helper_4() {
+    int values[] = {2, 1};
+    BSTNode *node0 = bst_create_node(&values[0], INT);
+    BSTNode *node1 = bst_create_node(&values[1], INT);
+    bst_add_node(node0, node1, INT);
+    BSTNode *result = bst_delete_helper(node0, &values[0], INT);
+    if (*(int *)result->val != 1 || result->left != NULL || result->right != NULL) {
+        printf("test_bst_delete_helper_4: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_delete_helper_4: PASS\n");
+}
+
+
+/* delete root node with single right child */
+void test_bst_delete_helper_5() {
+    int values[] = {2, 3};
+    BSTNode *node0 = bst_create_node(&values[0], INT);
+    BSTNode *node1 = bst_create_node(&values[1], INT);
+    bst_add_node(node0, node1, INT);
+    BSTNode *result = bst_delete_helper(node0, &values[0], INT);
+    if (*(int *)result->val != 3 || result->left != NULL || result->right != NULL) {
+        printf("test_bst_delete_helper_5: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_delete_helper_5: PASS\n");
+}
+
+
+/* delete root node with two children */
+void test_bst_delete_helper_6() {
+    int values[] = {2, 1, 3};
+    BSTNode *node0 = bst_create_node(&values[0], INT);
+    BSTNode *node1 = bst_create_node(&values[1], INT);
+    BSTNode *node2 = bst_create_node(&values[2], INT);
+    bst_add_node(node0, node1, INT);
+    bst_add_node(node0, node2, INT);
+    BSTNode *result = bst_delete_helper(node0, &values[0], INT);
+    if (
+        *(int *)result->val != 1 ||
+        result->left != NULL ||
+        *(int *)result->right->val != 3 ||
+        result->right->left != NULL ||
+        result->right->right != NULL
+    ) {
+        printf("test_bst_delete_helper_6: FAILED\n");
+        n_fail++;
+        return;
+    }
+    printf("test_bst_delete_helper_6: PASS\n");
 }
 
 
@@ -601,9 +905,28 @@ int main(int argc, char *argv[]) {
     test_bst_compare_nodes_7();
     test_bst_compare_nodes_8();
     test_bst_compare_nodes_9();
+    test_bst_compare_node_value_1();
+    test_bst_compare_node_value_2();
+    test_bst_compare_node_value_3();
+    test_bst_compare_node_value_4();
+    test_bst_compare_node_value_5();
+    test_bst_compare_node_value_6();
+    test_bst_compare_node_value_7();
+    test_bst_compare_node_value_8();
+    test_bst_compare_node_value_6();
     test_bst_create_node_1();
     test_bst_create_node_2();
     test_bst_create_node_3();
+    test_bst_delete_1();
+    test_bst_delete_2();
+    test_bst_delete_3();
+    test_bst_delete_4();
+    test_bst_delete_helper_1();
+    test_bst_delete_helper_2();
+    test_bst_delete_helper_3();
+    test_bst_delete_helper_4();
+    test_bst_delete_helper_5();
+    test_bst_delete_helper_6();
     test_bst_from_array_1();
     test_bst_from_array_2();
     test_bst_from_array_3();

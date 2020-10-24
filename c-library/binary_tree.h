@@ -20,7 +20,10 @@ typedef struct bst {
 
 void bst_add_node(BSTNode *, BSTNode *, char);
 int bst_compare_nodes(BSTNode *, BSTNode *, char);
+int bst_compare_node_value(BSTNode *, void *, char);
 BSTNode *bst_create_node(void *, char);
+void bst_delete(BST *, void *);
+BSTNode *bst_delete_helper(BSTNode *, void *, char);
 BST *bst_from_array(void *, char, int);
 int bst_height(BST *);
 int bst_height_helper(BSTNode *);
@@ -33,4 +36,5 @@ void bst_print_preorder_helper(BSTNode *, char);
 void bst_print_postorder(BST *);
 void bst_print_postorder_helper(BSTNode *, char);
 void bst_print_val(void *, char);
+BSTNode *bst_rightmost(BSTNode *);
 void bst_to_array(BST *, void *);

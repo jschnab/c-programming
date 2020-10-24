@@ -22,7 +22,10 @@ typedef struct bst {
 
 void bst_add_node(BSTNode *, BSTNode *, char);
 int bst_compare_nodes(BSTNode *, BSTNode *, char);
+int bst_compare_node_value(BSTNode *, void *, char);
 BSTNode *bst_create_node(void *, char);
+void bst_delete(BST *, void *);
+BSTNode *bst_delete_helper(BSTNode *, void *, char);
 BST *bst_from_array(void *, char, int);
 int bst_height(BST *);
 int bst_height_helper(BSTNode *);
@@ -35,6 +38,7 @@ void bst_print_preorder_helper(BSTNode *, char);
 void bst_print_postorder(BST *);
 void bst_print_postorder_helper(BSTNode *, char);
 void bst_print_val(void *, char);
+BSTNode *bst_rightmost(BSTNode *);
 void bst_to_array(BST *, void *);
 
 /* recursively add a new node to the left or right of an existing node
@@ -94,6 +98,42 @@ int bst_compare_nodes(BSTNode *a, BSTNode *b, char type) {
 }
 
 
+/* compare the value of a node with the value from a pointer, returns an integer:
+ *  0 if the values are equal
+ *  1 if the value of A > B
+ * -1 if the value of A < B */
+int bst_compare_node_value(BSTNode *node, void *value, char type) {
+    int i1, i2;
+    float f1, f2;
+    char *s1, *s2;
+    switch (type) {
+        case INT:
+            i1 = *(int *)node->val;
+            i2 = *(int *)value;
+            if (i1 < i2)
+                return -1;
+            if (i1 > i2)
+                return 1;
+            return 0;
+        case FLOAT:
+            f1 = *(float *)node->val;
+            f2 = *(float *)value;
+            if (f1 < f2)
+                return -1;
+            if (f1 > f2)
+                return 1;
+            return 0;
+        case STRING:
+            s1 = (char *)node->val;
+            s2 = (char *)value;
+            return strcmp(s1, s2);
+        default:
+            printf("error: node type not supported\n");
+            exit(1);
+    }
+}
+
+
 /* make a BST from an array, given its type and length n */
 BST *bst_from_array(void *array, char type, int n) {
     BST *tree = bst_init(type);
@@ -111,6 +151,81 @@ BST *bst_from_array(void *array, char type, int n) {
         }
     }
     return tree;
+}
+
+
+/* delete a node from the tree given its value
+ * assuming only one node in the tree has this value */
+void bst_delete(BST *tree, void *value) {
+    if (tree->head != NULL) {
+        tree->head = bst_delete_helper(tree->head, value, tree->type);
+        tree->n--;
+    }
+}
+
+
+/* helper function for the bst_delete() function */
+BSTNode *bst_delete_helper(BSTNode *root, void *value, char type) {
+    if (root == NULL)
+        return NULL;
+
+    /* node has no children */
+    if (
+        bst_compare_node_value(root, value, type) == 0 &&
+        root->left == NULL &&
+        root->right == NULL
+    ) {
+        free(root);
+        return NULL;
+    }
+
+    /* node has a single left child */
+    if (
+        bst_compare_node_value(root, value, type) == 0 &&
+        root->left != NULL &&
+        root->right == NULL
+    )
+        return root->left;
+
+    /* node has a single right child */
+    if (
+        bst_compare_node_value(root, value, type) == 0 &&
+        root->left == NULL &&
+        root->right != NULL
+    )
+        return root->right;
+
+    /* node has both children */
+    if (
+        bst_compare_node_value(root, value, type) == 0 &&
+        root->left != NULL &&
+        root->right != NULL
+    ) {
+        BSTNode *rightmost = bst_rightmost(root->left);
+        switch (type) {
+            case INT:
+                memcpy(root->val, rightmost->val, sizeof(int));
+                break;
+            case FLOAT:
+                memcpy(root->val, rightmost->val, sizeof(float));
+                break;
+            case STRING:
+                memcpy(root->val, rightmost->val, strlen(value));
+                break;
+            default:
+                printf("error: node value not supported\n");
+                exit(1);
+        }
+        root->left = bst_delete_helper(root->left, rightmost->val, type);
+    }
+
+    /* recursively traverse the tree to find the value to delete */
+    if (bst_compare_node_value(root, value, type) > 0)
+        root->left = bst_delete_helper(root->left, value, type);
+    else if (bst_compare_node_value(root, value, type) < 0)
+        root->right = bst_delete_helper(root->right, value, type);
+
+    return root;
 }
 
 
@@ -265,6 +380,14 @@ void bst_print_val(void *val, char type) {
         default:
             printf("?, ");
     }
+}
+
+
+/* get rightmost node of a node */
+BSTNode *bst_rightmost(BSTNode *node) {
+    if (node->right == NULL)
+        return node;
+    return bst_rightmost(node->right);
 }
 
 
