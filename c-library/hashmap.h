@@ -9,3 +9,8 @@ typedef struct hashmap {
     int count;
     HMItem **items;
 } HashMap;
+
+
+HashMap *hm_init();
+void *hm_copy_value(void *, char);
+HMItem *hm_create_item(void *, void *, char, char);

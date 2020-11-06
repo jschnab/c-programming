@@ -15,6 +15,7 @@ HashMap *hm_init() {
 
 
 void *hm_copy_value(void *source, char type) {
+    void *target;
     switch (type) {
         case INT:
             target = malloc(sizeof(int));
