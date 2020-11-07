@@ -13,4 +13,7 @@ typedef struct hashmap {
 
 HashMap *hm_init();
 void *hm_copy_value(void *, char);
-HMItem *hm_create_item(void *, void *, char, char);
+HMItem *hm_create_item(char *, void *, char);
+void hm_delete_hashmap(HashMap *);
+void hm_delete_item(HMItem *);
+void hm_hash(char *, int, int);

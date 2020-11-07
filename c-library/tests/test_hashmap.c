@@ -62,7 +62,7 @@ void test_hm_copy_value_3() {
 void test_hm_create_item_1() {
     char *key = "hello";
     float value = 3.14;
-    HMItem *pair = hm_create_item(key, &value, STRING, FLOAT);
+    HMItem *pair = hm_create_item(key, &value, FLOAT);
     if (strcmp(pair->key, key) != 0 || *(float *)pair->value != value) {
         n_fail++;
         printf("test_hm_create_item_1: FAILED\n");
