@@ -62,7 +62,7 @@ void test_hm_create_item_1() {
 }
 
 
-/* delete from hashmap with 1 item*/
+/* delete from hashmap with 1 item */
 void test_hm_delete_1() {
     HashMap *map = hm_init();
     char *key = "cat";
@@ -71,6 +71,7 @@ void test_hm_delete_1() {
     hm_delete(map, key);
     if (map->count != 0 || map->items[5] != &HM_DELETED_ITEM) {
         n_fail++;
+        printf("test_hm_delete_1: FAILED\n");
         return;
     }
     printf("test_hm_delete_1: PASS\n");
@@ -134,7 +135,6 @@ void test_hm_init_sized_1() {
         return;
     }
     printf("test_hm_init_sized_1: PASS\n");
-
 }
 
 
@@ -196,7 +196,7 @@ void test_hm_insert_1() {
 }
 
 
-/* get next prime number < 2*/
+/* get next prime number < 2 */
 void test_hm_next_prime_1() {
     if (hm_next_prime(0) != 2 || hm_next_prime(1) != 2) {
         n_fail++;
@@ -207,7 +207,7 @@ void test_hm_next_prime_1() {
 }
 
 
-/* get next prime number > 2*/
+/* get next prime number > 2 */
 void test_hm_next_prime_2() {
     if (
         hm_next_prime(10) != 11 ||

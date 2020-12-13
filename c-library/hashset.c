@@ -12,6 +12,31 @@ static const int HS_PRIME_2 = 163;
 static const int HS_BASE_SIZE = 50;
 
 
+/* add a value into a HashSet */
+void hs_add(HashSet *set, char *value) {
+    /* eventually resize HashSet */
+    int load = set->count * 100 / set->size;
+    if (load > 70) {
+        hs_resize_up(set);
+    }
+
+    int index = hs_get_hash(value, set->size, 0);
+    char *current = set->items[index];
+    int attempt = 1;
+    while (current != NULL && current != HS_DELETED_ITEM) {
+        /* value already in the set */
+        if (strcmp(current, value) == 0) {
+            return;
+        }
+        index = hs_get_hash(current, set->size, attempt);
+        current = set->items[index];
+        attempt++;
+    }
+    set->items[index] = value;
+    set->count++;
+}
+
+
 void hs_discard(HashSet *set, char *value) {
     /* eventually resize HashSet */
     int load = set->count / set->size * 100;
@@ -23,10 +48,9 @@ void hs_discard(HashSet *set, char *value) {
     char *item = set->items[index];
     int attempt = 1;
     while (item != NULL) {
-        if (item != &HS_DELETED_ITEM) {
+        if (item != HS_DELETED_ITEM) {
             if (strcmp(item, value) == 0) {
-                free(item);
-                set->items[index] = &HS_DELETED_ITEM;
+                set->items[index] = HS_DELETED_ITEM;
             }
         }
         index = hs_get_hash(value, set->size, attempt);
@@ -37,17 +61,11 @@ void hs_discard(HashSet *set, char *value) {
 }
 
 
-void hs_delete_hashset(HashSet *set) {
-    for (int i = 0; i < set->size; i++) {
-        free(set->items[i]);
-    }
+void hs_delete_set(HashSet *set) {
     free(set->items);
     free(set);
 }
 
-
-void hs_delete_hashset(HashSet *set) {
-}
 
 int hs_get_hash(char *value, int size, int attempt) {
     int hash_a = hs_hash(value, HS_PRIME_1, size);
@@ -56,7 +74,7 @@ int hs_get_hash(char *value, int size, int attempt) {
 }
 
 
-int hm_hash(char *value, int prime, int size) {
+int hs_hash(char *value, int prime, int size) {
     long hash = 0;
     int len = strlen(value);
     for (int i = 0; i < len; i++) {
@@ -92,31 +110,6 @@ HashSet *hs_init_sized(int base_size) {
 }
 
 
-/* insert a value into a HashSet */
-void hs_insert(HashSet *set, char *value) {
-    /* eventually resize HashSet */
-    int load = set->count * 100 / set->size;
-    if (load > 70) {
-        hs_resize_up(set);
-    }
-
-    int index = hs_get_hash(value, set->size, 0);
-    char *current = set->items[index];
-    int attempt = 1;
-    while (current != NULL && current != &HS_DELETED_ITEM) {
-        /* value already in the set */
-        if (strcmp(current, value) == 0) {
-            return;
-        }
-        index = hs_get_hash(item, set->size, attempt);
-        current = set->items[index];
-        attempt++;
-    }
-    set->items[index] = value;
-    set->count++;
-}
-
-
 /* returns whether x is a prime number or not:
  *  1 - prime
  *  0 - not prime
@@ -133,8 +126,8 @@ int hs_is_prime(int x) {
 
 
 /* returns the next prime number after x, or x if x is prime */
-int hm_next_prime(int x) {
-    while (hm_is_prime(x) != 1)
+int hs_next_prime(int x) {
+    while (hs_is_prime(x) != 1)
         x++;
     return x;
 }
@@ -148,9 +141,9 @@ void hs_resize(HashSet *set, int base_size) {
     /* copy items in new set having the desired size */
     HashSet *new_set = hs_init_sized(base_size);
     for (int i = 0; i < set->size; i++) {
-        char *item = set->items[s];
-        if (item != NULL && item != &HS_DELETED_ITEM)
-            hs_insert(new_set, item);
+        char *item = set->items[i];
+        if (item != NULL && item != HS_DELETED_ITEM)
+            hs_add(new_set, item);
     }
 
     /* set attributes of old set with attributes of new set */
@@ -167,7 +160,7 @@ void hs_resize(HashSet *set, int base_size) {
     set->items = new_set->items;
     new_set->items = tmp_items;
 
-    hs_delete_hashset(new_set);
+    hs_delete_set(new_set);
 }
 
 
@@ -193,7 +186,7 @@ int hs_search(HashSet *set, char *value) {
     char *item = set->items[index];
     int attempt = 1;
     while (item != NULL) {
-        if (item != &HS_DELETED_ITEM) {
+        if (item != HS_DELETED_ITEM) {
             if (strcmp(item, value) == 0) {
                 return 1;
             }
