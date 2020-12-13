@@ -24,7 +24,7 @@ void hs_add(HashSet *set, char *value) {
     char *current = set->items[index];
     int attempt = 1;
     while (current != NULL && current != HS_DELETED_ITEM) {
-        /* value already in the set */
+        /* do nothing if value already in the set */
         if (strcmp(current, value) == 0) {
             return;
         }
@@ -34,6 +34,24 @@ void hs_add(HashSet *set, char *value) {
     }
     set->items[index] = value;
     set->count++;
+}
+
+
+/* delete a HashSet */
+void hs_delete_set(HashSet *set) {
+    free(set->items);
+    free(set);
+}
+
+
+/* return difference between two sets */
+HashSet *hs_difference(HashSet *x, HashSet *y) {
+    HashSet *result = hs_init();
+    for (int i = 0; i < x->size; i++) {
+        if (x->items[i] != NULL && hs_search(y, x->items[i]) == 0)
+            hs_add(result, x->items[i]);
+    }
+    return result;
 }
 
 
@@ -61,9 +79,20 @@ void hs_discard(HashSet *set, char *value) {
 }
 
 
-void hs_delete_set(HashSet *set) {
-    free(set->items);
-    free(set);
+/* return 1 if two sets are disjoint, else 0 */
+int hs_disjoint(HashSet * x, HashSet * y) {
+    if (x->count == 0 || y->count == 0)
+        return 1;
+    if (x->count > y->count) {
+        HashSet *tmp = x;
+        x = y;
+        y = tmp;
+    }
+    for (int i = 0; i < x->size; i++) {
+        if (x->items[i] != NULL && hs_search(y, x->items[i]) == 1)
+            return 0;
+    }
+    return 1;
 }
 
 
@@ -107,6 +136,22 @@ HashSet *hs_init_sized(int base_size) {
         exit(1);
     }
     return set;
+}
+
+
+/* return the intersection of two sets */
+HashSet *hs_intersection(HashSet *x, HashSet *y) {
+    HashSet *result = hs_init();
+    if (x->count > y->count) {
+        HashSet *tmp = x;
+        x = y;
+        y = tmp;
+    }
+    for (int i = 0; i < x->size; i++) {
+        if (x->items[i] != NULL && hs_search(y, x->items[i]) != 0)
+            hs_add(result, x->items[i]);
+    }
+    return result;
 }
 
 
@@ -196,4 +241,38 @@ int hs_search(HashSet *set, char *value) {
         attempt++;
     }
     return 0;
+}
+
+
+/* return 1 if x is a subset of y, else 0 */
+int hs_subset(HashSet *x, HashSet *y) {
+    if (x->count == 0)
+        return 1;
+    if (x->count > y->count)
+        return 0;
+    for (int i = 0; i < x->size; i++) {
+        if (x->items[i] != NULL && hs_search(y, x->items[i]) != 1)
+            return 0;
+    }
+    return 1;
+}
+
+
+/* return 1 if x is a superset of y, else 0 */
+int hs_superset(HashSet *x, HashSet *y) {
+    return hs_subset(y, x);
+}
+
+
+/* return the union of sets x and y */
+HashSet *hs_union(HashSet *x, HashSet *y) {
+    HashSet *result = hs_init();
+    int i;
+    for (i = 0; i < x->size; i++)
+        if (x->items[i] != NULL)
+            hs_add(result, x->items[i]);
+    for (i = 0; i < y->size; i++)
+        if (y->items[i] != NULL)
+            hs_add(result, y->items[i]);
+    return result;
 }
