@@ -122,7 +122,7 @@ HashMap *hm_init() {
 }
 
 
-/* helper function to initialized a HashMap with at least a certain size */
+/* helper function to initialize a HashMap with at least a certain size */
 HashMap *hm_init_sized(int base_size) {
     HashMap *map = malloc(sizeof(HashMap));
     if (map == NULL) {
@@ -152,13 +152,11 @@ void hm_insert(HashMap *map, char *key, void *value, char value_type) {
     int index = hm_get_hash(item->key, map->size, 0);
     HMItem *current = map->items[index];
     int i = 1;
-    while (current != NULL) {
-        if (current != &HM_DELETED_ITEM) {
-            if (strcmp(current->key, key) == 0) {
-                hm_delete_item(current);
-                map->items[index] = item;
-                return;
-            }
+    while (current != NULL && current != &HM_DELETED_ITEM) {
+        if (strcmp(current->key, key) == 0) {
+            hm_delete_item(current);
+            map->items[index] = item;
+            return;
         }
         index = hm_get_hash(item->key, map->size, i);
         current = map->items[index];
@@ -192,7 +190,7 @@ int hm_next_prime(int x) {
 }
 
 
-/* resize the HashMap when it's growing to large or shrinking to small */
+/* resize the HashMap when it's growing too large or shrinking too small */
 void hm_resize(HashMap *map, int base_size) {
     if (base_size < HM_BASE_SIZE)
         return;
