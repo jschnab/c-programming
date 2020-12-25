@@ -152,11 +152,13 @@ void hm_insert(HashMap *map, char *key, void *value, char value_type) {
     int index = hm_get_hash(item->key, map->size, 0);
     HMItem *current = map->items[index];
     int i = 1;
-    while (current != NULL && current != &HM_DELETED_ITEM) {
-        if (strcmp(current->key, key) == 0) {
-            hm_delete_item(current);
-            map->items[index] = item;
-            return;
+    while (current != NULL) {
+        if (current != &HM_DELETED_ITEM) {
+            if (strcmp(current->key, key) == 0) {
+                hm_delete_item(current);
+                map->items[index] = item;
+                return;
+            }
         }
         index = hm_get_hash(item->key, map->size, i);
         current = map->items[index];
