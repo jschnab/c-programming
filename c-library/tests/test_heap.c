@@ -385,6 +385,66 @@ void test_heap_parent_index_2() {
 }
 
 
+/* pop integer item */
+void test_heap_pop_1() {
+    Heap *heap = heap_init(INT);
+    int values[] = {71, 15, 36, 57, 101};
+    int i;
+    for (i = 0; i < 5; i++)
+        heap_add(heap, &values[i]);
+    int *result = heap_pop(heap);
+    if (
+        *result != 101 ||
+        heap->count != 4
+    ) {
+        n_fail++;
+        printf("test_heap_pop_1: FAILED\n");
+        return;
+    }
+    printf("test_heap_pop_1: PASS\n");
+}
+
+
+/* pop float item */
+void test_heap_pop_2() {
+    Heap *heap = heap_init(FLOAT);
+    float values[] = {71.0, 15.0, 36.0, 57.0, 101.0};
+    int i;
+    for (i = 0; i < 5; i++)
+        heap_add(heap, &values[i]);
+    float *result = heap_pop(heap);
+    if (
+        *result != values[4] ||
+        heap->count != 4
+    ) {
+        n_fail++;
+        printf("test_heap_pop_2: FAILED\n");
+        return;
+    }
+    printf("test_heap_pop_2: PASS\n");
+}
+
+
+/* pop string item */
+void test_heap_pop_3() {
+    Heap *heap = heap_init(STRING);
+    char *values[] = {"oh", "brave", "hello", "new", "world"};
+    int i;
+    for (i = 0; i < 5; i++)
+        heap_add(heap, values[i]);
+    char *result = heap_pop(heap);
+    if (
+        strcmp(result, values[4]) != 0 ||
+        heap->count != 4
+    ) {
+        n_fail++;
+        printf("test_heap_pop_3: FAILED\n");
+        return;
+    }
+    printf("test_heap_pop_3: PASS\n");
+}
+
+
 /* get index of left child */
 void test_heap_left_child_index_1() {
     if (heap_left_child_index(0) != 1) {
@@ -424,6 +484,31 @@ void test_swapping_items_1() {
         printf("heap->items[%d] = %d\n", i, *((int *)heap->items+i));
         printf("heap->items[%d] = %d\n", i, ((int *)heap->items)[i]);
     }
+}
+
+
+/* sift integer item down from first position in array */
+void test_heap_sift_down_1() {
+    Heap *heap = heap_init(INT);
+    int values[] = {57, 71, 36, 15, 101};
+    for (int i = 0; i < 5; i++) {
+        ((int *)heap->items)[i] = values[i];
+        heap->count++;
+    }
+    heap_sift_down(heap, 0, heap->count-1);
+    if (
+        ((int *)heap->items)[0] != 71 ||
+        ((int *)heap->items)[1] != 57 ||
+        ((int *)heap->items)[2] != 36 ||
+        ((int *)heap->items)[3] != 15 ||
+        ((int *)heap->items)[4] != 101 ||
+        heap->count != 5
+    ) {
+        n_fail++;
+        printf("test_heap_sift_down_1: FAILED\n");
+        return;
+    }
+    printf("test_heap_sift_down_1: PASS\n");
 }
 
 
@@ -525,8 +610,12 @@ int main(int argc, char *argv[]) {
     test_heap_init_sized_3();
     test_heap_parent_index_1();
     test_heap_parent_index_2();
+    test_heap_pop_1();
+    test_heap_pop_2();
+    test_heap_pop_3();
     test_heap_left_child_index_1();
     test_heap_right_child_index_1();
+    test_heap_sift_down_1();
     test_heap_sift_up_1();
     test_heap_swap_items_1();
     test_heap_swap_items_2();

@@ -20,7 +20,11 @@ void heap_add(Heap *heap, void *value) {
             ((float *)heap->items)[heap->count] = *(float *)value;
             break;
         case STRING:
-            new = (char *)malloc(strlen((char *)value + 1));
+            new = (char *)malloc(strlen((char *)value)+1);
+            if (new == NULL) {
+                fprintf(stderr, "error: can't allocate memory for heap item\n");
+                exit(1);
+            }
             strcpy(new, (char *)value);
             ((char **)heap->items)[heap->count] = new;
             break;
@@ -152,6 +156,53 @@ int heap_parent_index(int child_index) {
 }
 
 
+/* pop item with highest value from heap, and maintain heap condition */
+void *heap_pop(Heap *heap) {
+    /* swap highest value item with last item */
+    heap_swap_items(heap, 0, heap->count-1);
+    heap->count--;
+
+    /* sift down item at index 0 to appropriate index */
+    heap_sift_down(heap, 0, heap->count-1);
+
+    /* return pointer to popped item */
+    void *result;
+    char *to_pop;
+    switch (heap->type) {
+        case INT:
+            result = malloc(sizeof(int));
+            if (result == NULL) {
+                fprintf(stderr, "error: can't allocate memory for heap item\n");
+                exit(1);
+            }
+            *(int *)result = ((int *)heap->items)[heap->count];
+            break;
+        case FLOAT:
+            result = malloc(sizeof(float));
+            if (result == NULL) {
+                fprintf(stderr, "error: can't allocate memory for heap item\n");
+                exit(1);
+            }
+            *(float *)result = ((float *)heap->items)[heap->count];
+            break;
+        case STRING:
+            to_pop = ((char **)heap->items)[heap->count];
+            result = malloc(strlen(to_pop)+1);
+            if (result == NULL) {
+                fprintf(stderr, "error: can't allocate memory for heap item\n");
+                exit(1);
+            }
+            strcpy((char *)result, to_pop);
+            free(to_pop);
+            break;
+        default:
+            fprintf(stderr, "error: unsupported heap item type\n");
+            exit(1);
+    }
+    return result;
+}
+
+
 /* get index of left child from parent index */
 int heap_left_child_index(int parent_index) {
     return 2 * parent_index + 1;
@@ -161,6 +212,57 @@ int heap_left_child_index(int parent_index) {
 /* get index of right child from parent index */
 int heap_right_child_index(int parent_index) {
     return 2 * parent_index + 2;
+}
+
+
+/* sift item down as far as necessary to maintain heap condition */
+void heap_sift_down(Heap *heap, int start, int end) {
+    while (1) {
+        int left = heap_left_child_index(start);
+        if (left >= end) {
+            left = -1;
+        }
+        int right = heap_right_child_index(start);
+        if (right >= end) {
+            right = -1;
+        }
+
+        /* parent has both children */
+        if (left != -1 && right != -1) {
+            if (heap_compare_items(heap, left, right) == 1) {
+                /* if parent < left child, then swap them */
+                if (heap_compare_items(heap, start, left) == -1) {
+                    heap_swap_items(heap, start, left);
+                    start = left;
+                }
+                /* else the heap condition is maintained and we stop */
+                else {
+                    break;
+                }
+            }
+            else {
+                /* if parent < right child, then swap them */
+                if (heap_compare_items(heap, start, right) == -1) {
+                    heap_swap_items(heap, start, right);
+                    start = right;
+                }
+                /* else the heap condition is maintained and we stop */
+                else {
+                    break;
+                }
+            }
+        }
+
+        /* parent has only left child */
+        else if (left != -1 && heap_compare_items(heap, start, left) == -1) {
+            heap_swap_items(heap, start, right);
+            start = right;
+        }
+
+        else {
+            break;
+        }
+    }
 }
 
 
