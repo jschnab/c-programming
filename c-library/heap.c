@@ -11,6 +11,10 @@ static const int BASE_SIZE = 30;
 
 /* add item to the heap */
 void heap_add(Heap *heap, void *value) {
+    /* eventually resize the heap */
+    if (heap->count == heap->size)
+        heap_resize_up(heap);
+
     char *new;
     switch (heap->type) {
         case INT:
@@ -81,7 +85,7 @@ int heap_compare_items(Heap *heap, int a, int b) {
 }
 
 
-/* delete a the heap */
+/* delete a heap */
 void heap_delete(Heap *heap) {
     if (heap->type == STRING) {
         for (int i = 0; i < heap->count; i++)
@@ -108,6 +112,45 @@ void heap_delete_item(Heap *heap, int index) {
             break;
     }
     heap->count--;
+
+    /* eventually resize the heap */
+    if (heap->count <= heap->size / 4)
+        heap_resize_down(heap);
+}
+
+
+/* create a heap from an array
+ * in a binary heap half of the items are parents and half of the items are
+ * children, so we start from the middle and iterate backwards to sift down
+ * items to their appropriate position */
+Heap *heap_from_array(void *array, char type, int size) {
+    Heap *heap;
+    int i;
+    switch (type) {
+        case INT:
+            heap = heap_init_sized(size, INT);
+            for (i = 0; i < size; i++)
+                ((int *)heap->items)[i] = ((int *)array)[i];
+            break;
+        case FLOAT:
+            heap = heap_init_sized(size, FLOAT);
+            for (i = 0; i < size; i++)
+                ((float *)heap->items)[i] = ((float *)array)[i];
+            break;
+        case STRING:
+            heap = heap_init_sized(size, STRING);
+            for (i = 0; i < size; i++)
+                ((char **)heap->items)[i] = ((char **)array)[i];
+            break;
+        default:
+            fprintf(stderr, "error: unsupported item type\n");
+            exit(1);
+    }
+    for (int i = (size - 2) / 2; i >= 0; i--) {
+        heap_sift_down(heap, i, size - 1);
+    }
+    heap->count = size;
+    return heap;
 }
 
 
@@ -122,7 +165,7 @@ Heap *heap_init(char type) {
 Heap *heap_init_sized(int size, char type) {
     Heap *heap = (Heap *) malloc(sizeof(Heap));
     if (heap == NULL) {
-        fprintf(stderr, "error: can't allocated memory to initialize heap\n");
+        fprintf(stderr, "error: can't allocate memory to initialize heap\n");
         exit(1);
     }
     switch (type) {
@@ -140,7 +183,7 @@ Heap *heap_init_sized(int size, char type) {
             exit(1);
     }
     if (heap->items == NULL) {
-        fprintf(stderr, "error: can't allocated memory to initialize heap\n");
+        fprintf(stderr, "error: can't allocate memory to initialize heap\n");
         exit(1);
     }
     heap->size = size;
@@ -159,13 +202,14 @@ int heap_parent_index(int child_index) {
 /* pop item with highest value from heap, and maintain heap condition */
 void *heap_pop(Heap *heap) {
     /* swap highest value item with last item */
-    heap_swap_items(heap, 0, heap->count-1);
-    heap->count--;
+    int last = heap->count-1;
+    heap_swap_items(heap, 0, last);
 
     /* sift down item at index 0 to appropriate index */
-    heap_sift_down(heap, 0, heap->count-1);
+    /* remember 'last' is the popped item index*/
+    heap_sift_down(heap, 0, last-1);
 
-    /* return pointer to popped item */
+    /* copy popped item and return pointer to it */
     void *result;
     char *to_pop;
     switch (heap->type) {
@@ -175,7 +219,7 @@ void *heap_pop(Heap *heap) {
                 fprintf(stderr, "error: can't allocate memory for heap item\n");
                 exit(1);
             }
-            *(int *)result = ((int *)heap->items)[heap->count];
+            *(int *)result = ((int *)heap->items)[last];
             break;
         case FLOAT:
             result = malloc(sizeof(float));
@@ -183,22 +227,22 @@ void *heap_pop(Heap *heap) {
                 fprintf(stderr, "error: can't allocate memory for heap item\n");
                 exit(1);
             }
-            *(float *)result = ((float *)heap->items)[heap->count];
+            *(float *)result = ((float *)heap->items)[last];
             break;
         case STRING:
-            to_pop = ((char **)heap->items)[heap->count];
+            to_pop = ((char **)heap->items)[last];
             result = malloc(strlen(to_pop)+1);
             if (result == NULL) {
                 fprintf(stderr, "error: can't allocate memory for heap item\n");
                 exit(1);
             }
             strcpy((char *)result, to_pop);
-            free(to_pop);
             break;
         default:
             fprintf(stderr, "error: unsupported heap item type\n");
             exit(1);
     }
+    heap_delete_item(heap, last);
     return result;
 }
 
@@ -209,26 +253,70 @@ int heap_left_child_index(int parent_index) {
 }
 
 
+/* resize heap when it's growing too large or shrinking too small */
+void heap_resize(Heap *heap, int new_size) {
+    if (new_size < BASE_SIZE)
+        return;
+
+    /* should probably check return value of realloc before assigning it
+     * to heap->items, if realloc returns NULL I can't free heap->items */
+    switch (heap->type) {
+        case INT:
+            heap->items = realloc(heap->items, sizeof(int) * (size_t)new_size);
+            break;
+        case FLOAT:
+            heap->items = realloc(heap->items, sizeof(float) * (size_t)new_size);
+            break;
+        case STRING:
+            heap->items = realloc(heap->items, sizeof(char *) * (size_t)new_size);
+            break;
+        default:
+            fprintf(stderr, "error: heap item type not supported\n");
+            exit(1);
+    }
+    if (heap->items == NULL) {
+        fprintf(stderr, "error: can't allocate memory for heap items\n");
+        exit(1);
+    }
+
+    heap->size = new_size;
+}
+
+
+/* decrease the size of the heap */
+void heap_resize_down(Heap *heap) {
+    heap_resize(heap, heap->size / 2);
+}
+
+/* increase the size of the heap */
+void heap_resize_up(Heap *heap) {
+    heap_resize(heap, heap->size * 2);
+}
+
+
 /* get index of right child from parent index */
 int heap_right_child_index(int parent_index) {
     return 2 * parent_index + 2;
 }
 
 
-/* sift item down as far as necessary to maintain heap condition */
+/* sift item down as far as necessary to maintain heap condition
+ * start is the index of the element we want to sift down
+ * elements between start and end indices (inclusive) respect the heap condition */
 void heap_sift_down(Heap *heap, int start, int end) {
     while (1) {
         int left = heap_left_child_index(start);
-        if (left >= end) {
+        if (left > end) {
             left = -1;
         }
         int right = heap_right_child_index(start);
-        if (right >= end) {
+        if (right > end) {
             right = -1;
         }
 
         /* parent has both children */
         if (left != -1 && right != -1) {
+            /* if left > right */
             if (heap_compare_items(heap, left, right) == 1) {
                 /* if parent < left child, then swap them */
                 if (heap_compare_items(heap, start, left) == -1) {
@@ -240,6 +328,8 @@ void heap_sift_down(Heap *heap, int start, int end) {
                     break;
                 }
             }
+
+            /* if right > left */
             else {
                 /* if parent < right child, then swap them */
                 if (heap_compare_items(heap, start, right) == -1) {
@@ -253,10 +343,10 @@ void heap_sift_down(Heap *heap, int start, int end) {
             }
         }
 
-        /* parent has only left child */
+        /* parent has only left child and parent < left child */
         else if (left != -1 && heap_compare_items(heap, start, left) == -1) {
-            heap_swap_items(heap, start, right);
-            start = right;
+            heap_swap_items(heap, start, left);
+            start = left;
         }
 
         else {
@@ -274,6 +364,36 @@ void heap_sift_up(Heap *heap, int index) {
             break;
         heap_swap_items(heap, index, heap_parent_index(index));
         index = heap_parent_index(index);
+    }
+}
+
+
+/* sort an array by converting to a heap */
+void heap_sort(void *array, char type, int size) {
+    Heap *heap = heap_from_array(array, type, size);
+    /* sort items in ascending order */
+    for (int last = size - 1; last > 0; last--) {
+        heap_swap_items(heap, 0, last);
+        heap_sift_down(heap, 0, last-1);
+    }
+    /* re-order items in original array */
+    int i;
+    switch (type) {
+        case INT:
+            for (i = 0; i < size; i++)
+                ((int *)array)[i] = ((int *)heap->items)[i];
+            break;
+        case FLOAT:
+            for (i = 0; i < size; i++)
+                ((float *)array)[i] = ((float *)heap->items)[i];
+            break;
+        case STRING:
+            for (i = 0; i < size; i++)
+                ((char **)array)[i] = ((char **)heap->items)[i];
+            break;
+        default:
+            fprintf(stderr, "error: unsupported item type\n");
+            exit(1);
     }
 }
 
@@ -300,7 +420,7 @@ void heap_swap_items(Heap *heap, int i, int j) {
             ((char **)heap->items)[j] = char_tmp;
             break;
         default:
-            fprintf(stderr, "error: supported heap item type\n");
+            fprintf(stderr, "error: unsupported heap item type\n");
             exit(1);
     }
 }

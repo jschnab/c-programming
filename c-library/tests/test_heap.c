@@ -309,6 +309,69 @@ void test_heap_delete_item_3() {
 }
 
 
+/* build heap from integer array */
+void test_heap_from_array_1() {
+    int size = 5;
+    int values[] = {71, 15, 36, 57, 101};
+    Heap *heap = heap_from_array(values, INT, size);
+    if (
+        ((int *)heap->items)[0] != 101 ||
+        ((int *)heap->items)[1] != 71 ||
+        ((int *)heap->items)[2] != 36 ||
+        ((int *)heap->items)[3] != 57 ||
+        ((int *)heap->items)[4] != 15 ||
+        heap->count != 5
+    ) {
+        n_fail++;
+        printf("test_heap_from_array_1: FAILED\n");
+        return;
+    }
+    printf("test_heap_from_array_1: PASS\n");
+}
+
+
+/* build heap from float array */
+void test_heap_from_array_2() {
+    int size = 5;
+    float values[] = {71.0, 15.0, 36.0, 57.0, 101.0};
+    Heap *heap = heap_from_array(values, FLOAT, size);
+    if (
+        ((float *)heap->items)[0] != ((float *)values)[4] ||
+        ((float *)heap->items)[1] != ((float *)values)[0] ||
+        ((float *)heap->items)[2] != ((float *)values)[2] ||
+        ((float *)heap->items)[3] != ((float *)values)[3] ||
+        ((float *)heap->items)[4] != ((float *)values)[1] ||
+        heap->count != 5
+    ) {
+        n_fail++;
+        printf("test_heap_from_array_2: FAILED\n");
+        return;
+    }
+    printf("test_heap_from_array_2: PASS\n");
+}
+
+
+/* build heap from string array */
+void test_heap_from_array_3() {
+    int size = 5;
+    char *values[] = {"oh", "brave", "hello", "new", "world"};
+    Heap *heap = heap_from_array(values, STRING, size);
+    if (
+        ((char **)heap->items)[0] != ((char **)values)[4] ||
+        ((char **)heap->items)[1] != ((char **)values)[0] ||
+        ((char **)heap->items)[2] != ((char **)values)[2] ||
+        ((char **)heap->items)[3] != ((char **)values)[3] ||
+        ((char **)heap->items)[4] != ((char **)values)[1] ||
+        heap->count != 5
+    ) {
+        n_fail++;
+        printf("test_heap_from_array_3: FAILED\n");
+        return;
+    }
+    printf("test_heap_from_array_3: PASS\n");
+}
+
+
 /* initialization of heap of integers */
 void test_heap_init_sized_1() {
     int base_size = 30;
@@ -455,6 +518,54 @@ void test_heap_left_child_index_1() {
     printf("test_heap_left_child_index_1: PASS\n");
 }
 
+
+/* resize up heap of integers */
+void test_heap_resize_1() {
+    Heap *heap = heap_init(INT);
+    int values[35];
+    int i;
+    for (i = 0; i < 35; i++) {
+        values[i] = i + 1;
+        heap_add(heap, &values[i]);
+    }
+    if (
+        heap->count != 35 ||
+        heap->size != 60 ||
+        ((int *)heap->items)[0] != values[i-1]
+    ) {
+        n_fail++;
+        printf("test_heap_resize_1: FAILED\n");
+        return;
+    }
+    printf("test_heap_resize_1: PASS\n");
+    heap_delete(heap);
+}
+
+
+/* resize down heap of integers */
+void test_heap_resize_2() {
+    Heap *heap = heap_init(INT);
+    int values[120];
+    int i;
+    for (i = 0; i < 120; i++) {
+        values[i] = i + 1;
+        heap_add(heap, &values[i]);
+    }
+    for (i = 0; i < 90; i++)
+        heap_pop(heap);
+    if (
+        heap->count != 30 ||
+        heap->size != 60 ||
+        ((int *)heap->items)[0] != 30
+    ) {
+        n_fail++;
+        printf("test_heap_resize_2: FAILED\n");
+        return;
+    }
+    printf("test_heap_resize_2: PASS\n");
+}
+
+
 /* get index of right child */
 void test_heap_right_child_index_1() {
     if (heap_right_child_index(0) != 2) {
@@ -487,13 +598,28 @@ void test_swapping_items_1() {
 }
 
 
+/* sort integers using heap */
+void test_heap_sort_1() {
+    int size = 5;
+    int values[] = {57, 71, 101, 36, 15};
+    heap_sort(values, INT, size);
+    for (int i = 1; i < size; i++) {
+        if (values[i-1] >= values[i]) {
+            n_fail++;
+            printf("test_heap_sort_1: FAILED\n");
+            return;
+        }
+    }
+    printf("test_heap_sort_1: PASS\n");
+}
+
+
 /* sift integer item down from first position in array */
 void test_heap_sift_down_1() {
     Heap *heap = heap_init(INT);
-    int values[] = {57, 71, 36, 15, 101};
-    for (int i = 0; i < 5; i++) {
-        ((int *)heap->items)[i] = values[i];
-        heap->count++;
+    int values[] = {57, 71, 36, 15};
+    for (int i = 0; i < 4; i++) {
+        heap_add(heap, &values[i]);
     }
     heap_sift_down(heap, 0, heap->count-1);
     if (
@@ -501,8 +627,7 @@ void test_heap_sift_down_1() {
         ((int *)heap->items)[1] != 57 ||
         ((int *)heap->items)[2] != 36 ||
         ((int *)heap->items)[3] != 15 ||
-        ((int *)heap->items)[4] != 101 ||
-        heap->count != 5
+        heap->count != 4
     ) {
         n_fail++;
         printf("test_heap_sift_down_1: FAILED\n");
@@ -605,6 +730,9 @@ int main(int argc, char *argv[]) {
     test_heap_delete_item_1();
     test_heap_delete_item_2();
     test_heap_delete_item_3();
+    test_heap_from_array_1();
+    test_heap_from_array_2();
+    test_heap_from_array_3();
     test_heap_init_sized_1();
     test_heap_init_sized_2();
     test_heap_init_sized_3();
@@ -614,7 +742,10 @@ int main(int argc, char *argv[]) {
     test_heap_pop_2();
     test_heap_pop_3();
     test_heap_left_child_index_1();
+    test_heap_resize_1();
+    test_heap_resize_2();
     test_heap_right_child_index_1();
+    test_heap_sort_1();
     test_heap_sift_down_1();
     test_heap_sift_up_1();
     test_heap_swap_items_1();
