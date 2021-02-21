@@ -1,0 +1,22 @@
+1. Dereferencing a void pointer
+void darray_append(DArray *array, void *item) {
+../dynamic_array.c: In function ‘darray_append’:
+../dynamic_array.c:15:17: warning: dereferencing ‘void *’ pointer
+     array->items[array->count] = item;
+
+2. Invalid use of void expression
+void darray_append(DArray *array, void *item) {
+../dynamic_array.c:15:32: error: invalid use of void expression
+     array->items[array->count] = item;
+
+
+3. Use wrong type while expecting pointer
+void darray_append(DArray *array, void *item) {
+../dynamic_array.c: In function ‘darray_append’:
+../dynamic_array.c:17:49: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
+             ((int *)array->items)[array->count] = item;
+
+
+../dynamic_array.c: In function ‘darray_swap_items’:
+../dynamic_array.c:158:39: error: lvalue required as left operand of assignment
+             &((int *)array->items)[i] = &((int *)array->items)[j];

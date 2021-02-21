@@ -79,7 +79,7 @@ int heap_compare_items(Heap *heap, int a, int b) {
                 return -1;
             return 0;
         default:
-            fprintf(stderr, "error: supported heap item type\n");
+            fprintf(stderr, "error: unsupported heap item type\n");
             exit(1);
     }
 }
