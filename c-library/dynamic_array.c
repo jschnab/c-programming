@@ -12,6 +12,10 @@ int BASE_SIZE = 30;
  * this function assumes the caller knows the type of the array and will
  * append an element of the correct type */
 void darray_append(DArray *array, void *value) {
+    /* eventually grow array if full */
+    if (array->count == array->size) {
+        darray_resize_up(array);
+    }
     char *str;
     switch (array->type) {
         case INT:
@@ -82,6 +86,18 @@ int darray_compare_items(DArray *array, int a, int b) {
 }
 
 
+/* delete a dynamic array */
+void darray_delete(DArray *array) {
+    if (array->type == STRING) {
+        for (int i = 0; i < array->count; i++) {
+            free(((char **)array->items)[i]);
+        }
+    }
+    free(array->items);
+    free(array);
+}
+
+
 /* delete an item from the array at the specified index*/
 void darray_delete_item(DArray *array, int index) {
     switch (array->type) {
@@ -96,6 +112,10 @@ void darray_delete_item(DArray *array, int index) {
             break;
     }
     array->count--;
+    /* eventually shrink array if sparse*/
+    if (array->count < array->size / 2) {
+        darray_resize_down(array);
+    }
 }
 
 
@@ -142,7 +162,7 @@ DArray *darray_init_sized(char type, int size) {
  * and return it */
 void *darray_pop(DArray *array) {
     int last = array->count - 1;
-    void *result;
+    void *result = NULL;
     char *to_pop;
     switch (array->type) {
         case INT:
@@ -191,6 +211,45 @@ void darray_quicksort(DArray *array, int left, int right) {
     darray_swap_items(array, pivot, right);
     darray_quicksort(array, left, pivot-1);
     darray_quicksort(array, pivot+1, right);
+}
+
+
+/* resize the array */
+void darray_resize(DArray *array, int new_size) {
+    if (new_size < BASE_SIZE) {
+        return;
+    }
+    switch (array->type) {
+        case INT:
+            array->items = realloc(array->items, sizeof(int) * (size_t)new_size);
+            break;
+        case FLOAT:
+            array->items = realloc(array->items, sizeof(float) * (size_t)new_size);
+            break;
+        case STRING:
+            array->items = realloc(array->items, sizeof(char *) * (size_t)new_size);
+            break;
+        default:
+            fprintf(stderr, "error: array type not supported\n");
+            exit(1);
+    }
+    if (array->items == NULL) {
+        fprintf(stderr, "error: can't allocate memory for dynamic array\n");
+        exit(1);
+    }
+    array->size = new_size;
+}
+
+
+/* increase the size of the array */
+void darray_resize_up(DArray *array) {
+    darray_resize(array, array->size * 2);
+}
+
+
+/* decrease the size of the array */
+void darray_resize_down(DArray *array) {
+    darray_resize(array, array->size / 2);
 }
 
 

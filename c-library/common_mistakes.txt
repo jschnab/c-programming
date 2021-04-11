@@ -17,6 +17,13 @@ void darray_append(DArray *array, void *item) {
              ((int *)array->items)[array->count] = item;
 
 
+4. Improper use of lvalue
 ../dynamic_array.c: In function ‘darray_swap_items’:
 ../dynamic_array.c:158:39: error: lvalue required as left operand of assignment
              &((int *)array->items)[i] = &((int *)array->items)[j];
+
+
+5. Return a variable that may be uninitialized
+../../c-library/dynamic_array.c: In function ‘darray_pop’:
+../../c-library/dynamic_array.c:175:12: warning: ‘result’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+     return result;
