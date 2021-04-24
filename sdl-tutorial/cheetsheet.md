@@ -13,7 +13,7 @@ int SDL_Init(Uint32 flags);
 Parameters:
 * `flags`: subsystem initialization flags.
 
-Usual flags include (amont others):
+Usual flags include (among others):
 * `SDL_INIT_TIMER`: timer subsystem
 * `SDL_INIT_AUDIO`: audio subsystem
 * `SDL_INIT_VIDEO`: video subsystem (automatically initializes events
@@ -68,7 +68,7 @@ void IMG_Quit(void);
 Create an `SDL_Window` struct.
 
 ```
-SDL_Window \* SDL_CreateWindow(
+SDL_Window * SDL_CreateWindow(
     const char * title,
     int x,
     int y,
@@ -93,7 +93,7 @@ Returns the window that was created or NULL on failure.
 Create a 2D rendering context for a window.
 
 ```
-SDL_Renderer \* SDL_CreateRenderer(
+SDL_Renderer * SDL_CreateRenderer(
     SDL_Window * window,
     int index,
     Uint32 flags
