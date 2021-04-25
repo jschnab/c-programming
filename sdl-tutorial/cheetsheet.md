@@ -214,3 +214,28 @@ Parameters:
   context (texture may be stretched to fill the given rectangle)
 
 Returns 0 on success or a negative error code on failure.
+
+### SDL_SetTextureColorMod
+
+Set an additional color value multiplied into render copy operations.
+
+When a texture is rendered, during the copy operation each source color channel
+is modulated by the appropriate color value according to the formula: `source =
+source * (color / 255)`.
+
+```
+int SDL_SetTextureColorMod(
+    SDL_Texture * texture,
+    Uint8 r,
+    Uint8 g,
+    Uint8 b
+);
+```
+
+Parameters:
+* `texture`: texture to update
+* `r`: red color value multiplied into copy operations
+* `g`: green color value multiplied into copy operations
+* `b`: blue color value multiplied into copy operations
+
+Returns 0 on success or a negative error code on failure.
