@@ -15,3 +15,7 @@ the command "locate myheader.h" will return the path if it exists
 
 find where gcc looks for header files (i.e. where C preprocessor looks for 'includes')
 `gcc -print-prog-name=cpp` -v
+
+error: variably modified ‘gSpriteClips’ at file scope
+cannot have a static array which size is given as a variable
+use #define
