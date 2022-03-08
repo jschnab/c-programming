@@ -19,3 +19,5 @@ find where gcc looks for header files (i.e. where C preprocessor looks for 'incl
 error: variably modified ‘gSpriteClips’ at file scope
 cannot have a static array which size is given as a variable
 use #define
+
+cannot have non-constant global variables
