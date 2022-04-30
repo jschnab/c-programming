@@ -1,0 +1,2 @@
+Hello how are you?
+I am just trying to test a simple C program.
