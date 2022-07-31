@@ -1,0 +1,11 @@
+hello
+this file contains 3 lines
+and nine spaces
+and one	tabs
+
+
+and one backslash \
+
+this line has trailing space   
+this line has only one trailing space 
+

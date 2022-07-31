@@ -1,0 +1,4 @@
+int a
+char *name
+float (*pow)()
+char *argv[4]
